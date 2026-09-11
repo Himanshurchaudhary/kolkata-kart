@@ -2,14 +2,194 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/UserLogo.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    <title>Gramin Cart</title>
 
-    <!-- Restore path after 404 redirect -->
+    <!-- ═══════════════════════════════════════════
+         BASIC META
+    ═══════════════════════════════════════════ -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- Primary SEO -->
+    <title>Kolkata Kart | Online Grocery & Daily Essentials Delivery in Kolkata</title>
+    <meta
+      name="description"
+      content="Kolkata Kart – West Bengal's trusted online grocery store. Order fresh vegetables, fruits, and daily essentials online and get fast doorstep delivery across Kolkata."
+    />
+    <meta
+      name="keywords"
+      content="Kolkata Kart, online grocery Kolkata, grocery delivery Kolkata, fresh vegetables Kolkata, daily essentials delivery Kolkata, online shopping West Bengal, local grocery delivery Bengal, sabzi delivery Kolkata"
+    />
+    <meta name="author" content="Kolkata Kart" />
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+    <link rel="canonical" href="https://www.kolkatakart.in/" />
+
+    <!-- ═══════════════════════════════════════════
+         OPEN GRAPH (Facebook / WhatsApp / LinkedIn)
+    ═══════════════════════════════════════════ -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Kolkata Kart" />
+    <meta property="og:title" content="Kolkata Kart | Online Grocery Delivery in Kolkata, West Bengal" />
+    <meta
+      property="og:description"
+      content="Order fresh groceries, vegetables & daily essentials online. Fast doorstep delivery across Kolkata. West Bengal's own grocery app!"
+    />
+    <meta property="og:url" content="https://www.kolkatakart.in/" />
+    <meta property="og:image" content="https://www.kolkatakart.in/og-banner.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Kolkata Kart – Online Grocery Delivery in West Bengal" />
+    <meta property="og:locale" content="en_IN" />
+
+    <!-- ═══════════════════════════════════════════
+         TWITTER / X CARD
+    ═══════════════════════════════════════════ -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Kolkata Kart | Online Grocery Delivery in Kolkata" />
+    <meta
+      name="twitter:description"
+      content="Order fresh groceries, vegetables & daily essentials online. Fast doorstep delivery across Kolkata, West Bengal."
+    />
+    <meta name="twitter:image" content="https://www.kolkatakart.in/og-banner.png" />
+    <meta name="twitter:site" content="@KolkataKart" />
+
+    <!-- ═══════════════════════════════════════════
+         GEO / LOCAL SEO
+    ═══════════════════════════════════════════ -->
+    <meta name="geo.region" content="IN-WB" />
+    <meta name="geo.placename" content="Kolkata, West Bengal, India" />
+    <meta name="geo.position" content="22.5726;88.3639" />
+    <meta name="ICBM" content="22.5726, 88.3639" />
+
+    <!-- ═══════════════════════════════════════════
+         STRUCTURED DATA – Organization
+    ═══════════════════════════════════════════ -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Kolkata Kart",
+      "url": "https://www.kolkatakart.in",
+      "logo": "https://www.kolkatakart.in/UserLogo.png",
+      "description": "Kolkata Kart is West Bengal's trusted online grocery and daily essentials delivery platform. We deliver fresh vegetables, fruits, and staples to your doorstep across Kolkata.",
+      "foundingLocation": {
+        "@type": "Place",
+        "name": "Kolkata, West Bengal, India"
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Kolkata",
+        "addressRegion": "West Bengal",
+        "addressCountry": "IN"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer support",
+        "availableLanguage": ["en", "hi", "bn"]
+      },
+      "sameAs": [
+        "https://www.facebook.com/KolkataKart",
+        "https://www.instagram.com/KolkataKart",
+        "https://twitter.com/KolkataKart"
+      ]
+    }
+    </script>
+
+    <!-- ═══════════════════════════════════════════
+         STRUCTURED DATA – WebSite + Sitelinks Searchbox
+    ═══════════════════════════════════════════ -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Kolkata Kart",
+      "url": "https://www.kolkatakart.in",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://www.kolkatakart.in/search?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+
+    <!-- ═══════════════════════════════════════════
+         STRUCTURED DATA – LocalBusiness (GroceryStore)
+    ═══════════════════════════════════════════ -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "GroceryStore",
+      "name": "Kolkata Kart",
+      "image": "https://www.kolkatakart.in/UserLogo.png",
+      "url": "https://www.kolkatakart.in",
+      "description": "Online grocery and daily essentials delivery in Kolkata. Order fresh vegetables, fruits, staples and more from West Bengal's own grocery platform.",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Kolkata",
+        "addressRegion": "West Bengal",
+        "postalCode": "700001",
+        "addressCountry": "IN"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 22.5726,
+        "longitude": 88.3639
+      },
+      "areaServed": [
+        {
+          "@type": "City",
+          "name": "Kolkata"
+        },
+        {
+          "@type": "State",
+          "name": "West Bengal"
+        }
+      ],
+      "priceRange": "₹",
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Groceries & Daily Essentials"
+      }
+    }
+    </script>
+
+    <!-- ═══════════════════════════════════════════
+         STRUCTURED DATA – MobileApplication
+    ═══════════════════════════════════════════ -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "MobileApplication",
+      "name": "Kolkata Kart",
+      "operatingSystem": "Android, iOS",
+      "applicationCategory": "ShoppingApplication",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "INR"
+      },
+      "description": "Order groceries and daily essentials online via the Kolkata Kart app. Fast delivery across Kolkata and West Bengal."
+    }
+    </script>
+
+    <!-- ═══════════════════════════════════════════
+         PERFORMANCE & PWA
+    ═══════════════════════════════════════════ -->
+    <link rel="icon" type="image/svg+xml" href="/UserLogo.png" />
+    <link rel="apple-touch-icon" href="/UserLogo.png" />
+    <meta name="theme-color" content="#16a34a" />
+    <!-- Update #16a34a to your brand color -->
+
+    <!-- Razorpay -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <!-- ═══════════════════════════════════════════
+         SPA 404 REDIRECT RESTORE
+    ═══════════════════════════════════════════ -->
     <script>
-      (function() {
+      (function () {
         var redirectPath = sessionStorage.getItem('redirectPath');
         if (redirectPath && redirectPath !== '/') {
           sessionStorage.removeItem('redirectPath');
@@ -17,8 +197,8 @@
         }
       })();
     </script>
-
   </head>
+
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
