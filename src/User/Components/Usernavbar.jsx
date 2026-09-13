@@ -521,8 +521,8 @@ const UserNavbar = () => {
               className="w-17 h-17 object-contain"
             />
             <div className="leading-tight">
-              <span className="block text-green-600 font-extrabold text-base tracking-tight">EcoGrow </span>
-              <span className="block text-orange-400 font-extrabold text-base tracking-tight -mt-1">Bazar</span>
+              <span className="block text-green-600 font-extrabold text-base tracking-tight">Kolkata </span>
+              <span className="block text-orange-400 font-extrabold text-base tracking-tight -mt-1">Kart</span>
             </div>
           </div>
 
@@ -535,7 +535,7 @@ const UserNavbar = () => {
             onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 14px rgba(249,115,22,0.4)'; }}
             style={{ background: 'linear-gradient(135deg,#f97316,#ea580c)', color: '#fff', fontWeight: 700, fontSize: 13, padding: '8px 18px', borderRadius: 10, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6, boxShadow: '0 4px 14px rgba(249,115,22,0.4)', transition: 'transform 0.2s, box-shadow 0.2s', whiteSpace: 'nowrap', marginRight: 12 }}
           >
-            🛍️ Sell on EcoGrow Bazar
+            🛍️ Seller Login
           </a>
 
           {isLoggedIn ? (
@@ -666,8 +666,8 @@ const UserNavbar = () => {
               />
             </div>
             <div className="leading-tight">
-              <span className="block text-green-600 font-extrabold text-sm tracking-tight">EcoGrow</span>
-              <span className="block text-orange-400 font-extrabold text-sm tracking-tight -mt-0.5">Bazar</span>
+              <span className="block text-green-600 font-extrabold text-sm tracking-tight">Kolkata</span>
+              <span className="block text-orange-400 font-extrabold text-sm tracking-tight -mt-0.5">Kart</span>
             </div>
           </div>
 
@@ -801,8 +801,8 @@ const UserNavbar = () => {
                   </svg>
                 </div>
                 <div className="leading-tight">
-                  <span className="block text-green-600 font-extrabold text-sm">EcoGrow</span>
-                  <span className="block text-orange-400 font-extrabold text-sm tracking-tight -mt-0.5">Bazar</span>
+                  <span className="block text-green-600 font-extrabold text-sm">Kolkata</span>
+                  <span className="block text-orange-400 font-extrabold text-sm tracking-tight -mt-0.5">Kart</span>
                 </div>
               </div>
               <button
@@ -849,7 +849,7 @@ const UserNavbar = () => {
                 onClick={() => setMobileMenuOpen(false)}
                 style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, background: 'linear-gradient(135deg,#f97316,#ea580c)', color: '#fff', fontWeight: 700, fontSize: 13, borderRadius: 10, padding: '10px 0', textDecoration: 'none', boxShadow: '0 4px 14px rgba(249,115,22,0.35)', marginBottom: 10 }}
               >
-                🛍️ Sell on EcoGrow Bazar
+                🛍️ Seller login
               </a>
               {isLoggedIn ? (
                 <div className="flex flex-col gap-2">

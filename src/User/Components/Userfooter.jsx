@@ -177,8 +177,8 @@ const UserFooter = () => {
             />
           </div>
           <div style={{ lineHeight: 1.1 }}>
-            <span style={{ display: 'block', color: '#fff', fontWeight: 800, fontSize: 22, letterSpacing: '-0.5px' }}>EcoGrow</span>
-            <span style={{ display: 'block', color: '#fff', fontWeight: 800, fontSize: 22, letterSpacing: '-0.5px', marginTop: -2 }}>Bazar</span>
+            <span style={{ display: 'block', color: '#fff', fontWeight: 800, fontSize: 22, letterSpacing: '-0.5px' }}>Kolkata</span>
+            <span style={{ display: 'block', color: '#fff', fontWeight: 800, fontSize: 22, letterSpacing: '-0.5px', marginTop: -2 }}>kart</span>
           </div>
         </div>
 
@@ -229,7 +229,7 @@ const UserFooter = () => {
           {/* About + Contact — full width on mobile/tablet, first col on desktop */}
           <div className="uf-about-col">
             <p style={{ color: '#9ca3af', fontSize: 13, lineHeight: 1.7, marginBottom: 20, maxWidth: 380, margin: '0 0 20px' }}>
-              EcoGrow Bazar is your trusted online shop for fresh groceries, perfumes, and daily essentials.
+              Kolkata Kart is your trusted online shop for fresh groceries, perfumes, and daily essentials.
               We deliver quality products at the best prices—right to your doorstep.
             </p>
             <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -284,7 +284,7 @@ const UserFooter = () => {
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap', justifyContent: 'center' }}>
           <span style={{ fontSize: '12px', color: '#6b7280' }}>© 2026 All Rights Reserved</span>
           <span style={{ width: '4px', height: '4px', borderRadius: '50%', backgroundColor: '#4b5563', display: 'inline-block' }} />
-          <span style={{ fontSize: '12px', fontWeight: '500', color: '#9ca3af' }}>EcoGrow Bazar</span>
+          <span style={{ fontSize: '12px', fontWeight: '500', color: '#9ca3af' }}>Kolkata Kart</span>
           <span style={{ width: '4px', height: '4px', borderRadius: '50%', backgroundColor: '#4b5563', display: 'inline-block', margin: '0 2px' }} />
           <span style={{ fontSize: '12px', color: '#6b7280' }}>Design & Development by</span>
           <a

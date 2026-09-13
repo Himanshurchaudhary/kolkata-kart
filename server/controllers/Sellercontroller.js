@@ -31,13 +31,14 @@ cloudinary.config({
 
 // ── Nodemailer transporter ─────────────────────────────────────────
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: process.env.EMAIL_HOST,      // smtp.hostinger.com
+  port: parseInt(process.env.EMAIL_PORT),  // 465
+  secure: true,                      // true for port 465
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    user: process.env.EMAIL_USER,    // support@kolkatakart.in
+    pass: process.env.EMAIL_PASS,    // Kolkatakart@04
   },
 });
-
 // ── Helpers ────────────────────────────────────────────────────────
 
 /** Generate a 6-digit OTP */
