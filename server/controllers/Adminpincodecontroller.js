@@ -1,7 +1,7 @@
 // adminPincodeController.js
 // CRUD + Bulk Import + Toggle for serviceable_pincodes table
 
-const { pool } = require('../../config/db');
+const { pool } = require('../config/db');
 
 // ─── Helper: validate pincode string ─────────────────────────────────────────
 const isValidPincode = (p) => /^\d{4,10}$/.test(String(p).trim());
