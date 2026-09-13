@@ -68,7 +68,7 @@ const LoginPage = () => {
           
           <div className="absolute top-8 left-10 right-10 hidden sm:flex justify-between items-center text-[10px] font-medium z-10">
             <p className="text-white lg:text-gray-400 italic">
-              Powered by <span className="text-[#00B14F] font-bold">EcoGrow Bazar</span> ©2026
+              Powered by <span className="text-[#00B14F] font-bold">Kolkata Kart</span> ©2026
             </p>
             <span className="bg-[#FFE5EF] text-[#FF5A9E] px-2 py-1 rounded font-bold">v1.2.2</span>
           </div>
@@ -80,7 +80,7 @@ const LoginPage = () => {
               className="w-25 h-25 object-contain"
             />
             <h1 className="text-3xl font-black text-white lg:text-[#28bc25] tracking-tighter text-center">
-              EcoGrow<span className="text-white lg:text-[#e79945]"> Bazar</span>
+              Kolkata<span className="text-white lg:text-[#e79945]"> Kart</span>
             </h1>
             <p className="text-white/70 lg:text-gray-400 text-sm mt-1">Authorized Personnel Only</p>
           </div>

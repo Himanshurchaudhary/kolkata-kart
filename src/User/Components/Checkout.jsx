@@ -901,12 +901,31 @@ export default function Checkout() {
                   title="Payment Method"
                 />
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+
+                  {/* COD — hamesha dikhao */}
                   <PayBtn
                     active={paymentMethod === "COD"}
                     onClick={() => setPaymentMethod("COD")}
                     icon={<Banknote size={18} color={paymentMethod === "COD" ? "#16a34a" : "#9ca3af"} />}
                     label="Cash on Delivery"
                   />
+
+                  {/* Razorpay — sirf tab dikhao jab gateway active ho */}
+                  {gateways.some(g => g.gatewayName === "Razorpay") && (
+                    <PayBtn
+                      active={paymentMethod === "Razorpay"}
+                      onClick={() => setPaymentMethod("Razorpay")}
+                      icon={
+                        <img
+                          src="https://razorpay.com/favicon.png"
+                          alt="Razorpay"
+                          style={{ width: 18, height: 18, objectFit: "contain" }}
+                        />
+                      }
+                      label="Pay Online (Razorpay)"
+                    />
+                  )}
+
                 </div>
               </div>
 

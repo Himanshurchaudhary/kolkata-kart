@@ -15,25 +15,25 @@ const authHdr = () => ({
 // ─── API helpers ──────────────────────────────────────────────────────────────
 const api = {
   list: (params = "") =>
-    fetch(`${API_URL}/api/admin/pincodes?${params}`, { headers: authHdr() }).then((r) => r.json()),
+    fetch(`${API_URL}/api/pincode/pincodes?${params}`, { headers: authHdr() }).then((r) => r.json()),
   add: (body) =>
-    fetch(`${API_URL}/api/admin/pincodes`, {
+    fetch(`${API_URL}/api/pincode/pincodes`, {
       method: "POST", headers: authHdr(), body: JSON.stringify(body),
     }).then((r) => r.json()),
   update: (id, body) =>
-    fetch(`${API_URL}/api/admin/pincodes/${id}`, {
+    fetch(`${API_URL}/api/pincode/pincodes/${id}`, {
       method: "PUT", headers: authHdr(), body: JSON.stringify(body),
     }).then((r) => r.json()),
   toggle: (id, isActive) =>
-    fetch(`${API_URL}/api/admin/pincodes/${id}/toggle`, {
+    fetch(`${API_URL}/api/pincode/pincodes/${id}/toggle`, {
       method: "PATCH", headers: authHdr(), body: JSON.stringify({ isActive }),
     }).then((r) => r.json()),
   delete: (id) =>
-    fetch(`${API_URL}/api/admin/pincodes/${id}`, {
+    fetch(`${API_URL}/api/pincode/pincodes/${id}`, {
       method: "DELETE", headers: authHdr(),
     }).then((r) => r.json()),
   bulkImport: (pincodes) =>
-    fetch(`${API_URL}/api/admin/pincodes/bulk`, {
+    fetch(`${API_URL}/api/pincode/pincodes/bulk`, {
       method: "POST", headers: authHdr(), body: JSON.stringify({ pincodes }),
     }).then((r) => r.json()),
 };

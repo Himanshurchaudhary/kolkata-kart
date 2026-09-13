@@ -181,9 +181,9 @@ const PageLoader = ({ fading, onComplete }) => {
  
       {/* Brand name */}
       <div className="eg-brand" style={{ marginBottom: 6 }}>
-        <span style={{ fontSize: 'clamp(28px,9vw,42px)', fontWeight: 700, color: '#1a7a1a', fontFamily: "Georgia,'Times New Roman',serif", letterSpacing: -1 }}>Eco</span>
-        <span style={{ fontSize: 'clamp(28px,9vw,42px)', fontWeight: 700, color: '#155a15', fontFamily: "Georgia,'Times New Roman',serif", letterSpacing: -1 }}>Grow</span>
-        <span style={{ fontSize: 'clamp(28px,9vw,42px)', fontWeight: 700, color: '#e85414', fontFamily: "Georgia,'Times New Roman',serif", letterSpacing: -1 }}>Bazar</span>
+        <span style={{ fontSize: 'clamp(28px,9vw,42px)', fontWeight: 700, color: '#1a7a1a', fontFamily: "Georgia,'Times New Roman',serif", letterSpacing: -1 }}>Kol</span>
+        <span style={{ fontSize: 'clamp(28px,9vw,42px)', fontWeight: 700, color: '#155a15', fontFamily: "Georgia,'Times New Roman',serif", letterSpacing: -1 }}>Kata</span>
+        <span style={{ fontSize: 'clamp(28px,9vw,42px)', fontWeight: 700, color: '#e85414', fontFamily: "Georgia,'Times New Roman',serif", letterSpacing: -1 }}>Kart</span>
       </div>
  
       {/* Tagline */}
