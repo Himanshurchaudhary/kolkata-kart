@@ -15,7 +15,6 @@ const {
 const { protect, isAdmin } = require('../middleware/authMiddleware');
 
 // All routes protected by admin auth
-router.use(verifyAdminToken);
 
 // ── /api/admin/pincodes ───────────────────────────────────────────────────────
 router.get   ("/",     protect,   listPincodes);        // GET    list with search + filter + pagination
