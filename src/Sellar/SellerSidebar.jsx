@@ -69,7 +69,7 @@ export default function SellerSidebar({
               <ShoppingCart size={18} color="#fff" />
             </div>
             <div style={{ minWidth: 0 }}>
-              <div style={{ fontWeight: 800, fontSize: 13, color: "#2d5a1b", lineHeight: 1 }}>Gramin Cart</div>
+              <div style={{ fontWeight: 800, fontSize: 13, color: "#2d5a1b", lineHeight: 1 }}>Kolkata Kart</div>
               <div style={{ fontSize: 10, color: "#9ca3af" }}>Seller Portal</div>
             </div>
           </div>

@@ -38,9 +38,10 @@ import Customers from '../Admin/Pages/Customers';
 import CustomerOrders from '../Admin/Pages/Customerorders';
 import SellerManagement from './Admin/SellerManagement'; // NEW
 import SellerProductsApproval from './Admin/SellerProductsApproval'
+import AdminPincodeManager from "./Adminpincodemanager";
 
 const AdminLayout = () => {
-  const [sidebarOpen,   setSidebarOpen]   = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   return (
@@ -75,40 +76,43 @@ const AdminLayout = () => {
         {/* Page Routes */}
         <main className="flex-1 p-4 md:p-10 overflow-y-auto">
           <Routes>
-            <Route path="dash"                    element={<AdminLay />} />
-            <Route path="productList"             element={<ProductList />} />
-            <Route path="category"                element={<CategoryPage />} />
-            <Route path="brandpage"               element={<BrandPage />} />
-            <Route path="addProducts"             element={<AddProductPage />} />
-            <Route path="addFlash"                element={<CreateFlashSale />} />
-            <Route path="viewflash"               element={<FlashSaleApp />} />
-            <Route path="addad"                   element={<AddNewAd />} />
-            <Route path="adlist"                  element={<AdsListPage />} />
-            <Route path="Addcoupan"               element={<AddCouponPage />} />
-            <Route path="coupanlist"              element={<CouponListPage />} />
-            <Route path="addBlogs"                element={<AddBlogPage />} />
-            <Route path="listBlog"                element={<BlogListPage />} />
-            <Route path="addDriver"               element={<AddDriver />} />
-            <Route path="allDriver"               element={<AllDrivers />} />
-            <Route path="texs"                    element={<TaxManagement />} />
-            <Route path="deliveryCharge"          element={<DeliveryChargePage />} />
-            <Route path="paymentgateway"          element={<PaymentGatewaysPage />} />
-            <Route path="smsSetting"              element={<SmsConfigPage />} />
-            <Route path="socialAuth"              element={<SocialAuthPage />} />
-            <Route path="pusher"                  element={<PusherConfiguration />} />
-            <Route path="mailConfig"              element={<MailConfigurationPage />} />
-            <Route path="firebase"                element={<FirebaseNotificationPage />} />
-            <Route path="pusernotication"         element={<PushNotificationPage />} />
-            <Route path="ticket_issue"            element={<TicketIssueTypes />} />
-            <Route path="support-tickets"         element={<AllHelpRequests />} />
-            <Route path="support-tickets/:id"     element={<SupportTicketDetail />} />
-            <Route path="Order-list"              element={<OrdersList />} />
-            <Route path="bannerList"              element={<BannerList />} />
-            <Route path="banner"                  element={<AddBanner />} />
-            <Route path="customers"               element={<Customers />} />
-            <Route path="customers/:id/orders"    element={<CustomerOrders />} />
-            <Route path="sellers"                 element={<SellerManagement />} /> {/* NEW */}
+            <Route path="dash" element={<AdminLay />} />
+            <Route path="productList" element={<ProductList />} />
+            <Route path="category" element={<CategoryPage />} />
+            <Route path="brandpage" element={<BrandPage />} />
+            <Route path="addProducts" element={<AddProductPage />} />
+            <Route path="addFlash" element={<CreateFlashSale />} />
+            <Route path="viewflash" element={<FlashSaleApp />} />
+            <Route path="addad" element={<AddNewAd />} />
+            <Route path="adlist" element={<AdsListPage />} />
+            <Route path="Addcoupan" element={<AddCouponPage />} />
+            <Route path="coupanlist" element={<CouponListPage />} />
+            <Route path="addBlogs" element={<AddBlogPage />} />
+            <Route path="listBlog" element={<BlogListPage />} />
+            <Route path="addDriver" element={<AddDriver />} />
+            <Route path="allDriver" element={<AllDrivers />} />
+            <Route path="texs" element={<TaxManagement />} />
+            <Route path="deliveryCharge" element={<DeliveryChargePage />} />
+            <Route path="paymentgateway" element={<PaymentGatewaysPage />} />
+            <Route path="smsSetting" element={<SmsConfigPage />} />
+            <Route path="socialAuth" element={<SocialAuthPage />} />
+            <Route path="pusher" element={<PusherConfiguration />} />
+            <Route path="mailConfig" element={<MailConfigurationPage />} />
+            <Route path="firebase" element={<FirebaseNotificationPage />} />
+            <Route path="pusernotication" element={<PushNotificationPage />} />
+            <Route path="ticket_issue" element={<TicketIssueTypes />} />
+            <Route path="support-tickets" element={<AllHelpRequests />} />
+            <Route path="support-tickets/:id" element={<SupportTicketDetail />} />
+            <Route path="Order-list" element={<OrdersList />} />
+            <Route path="bannerList" element={<BannerList />} />
+            <Route path="banner" element={<AddBanner />} />
+            <Route path="customers" element={<Customers />} />
+            <Route path="customers/:id/orders" element={<CustomerOrders />} />
+            <Route path="sellers" element={<SellerManagement />} /> {/* NEW */}
             <Route path="seller-products-approval" element={<SellerProductsApproval />} /> {/* NEW */}
+            <Route path="pincode" element={<AdminPincodeManager/>} /> {/* NEW */}
+
+
           </Routes>
         </main>
       </div>

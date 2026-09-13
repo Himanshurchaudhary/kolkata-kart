@@ -7,19 +7,17 @@ const sendEmail = async (options) => {
         if (!config) throw new Error('Mail configuration not found or is disabled.');
 
         const transporter = nodemailer.createTransport({
-            host:   config.mailHost,
-            port:   Number(config.mailPort),
-            secure: config.mailEncryption === 'ssl',
-            family: 4,
-            auth: {
-                user: config.mailUserName,
-                pass: config.mailPassword,
-            },
-            tls: { rejectUnauthorized: false },
+          host: process.env.EMAIL_HOST,      // smtp.hostinger.com
+          port: parseInt(process.env.EMAIL_PORT),  // 465
+          secure: true,                      // true for port 465
+          auth: {
+            user: process.env.EMAIL_USER,    // support@kolkatakart.in
+            pass: process.env.EMAIL_PASS,    // Kolkatakart@04
+          },
         });
 
         await transporter.sendMail({
-            from:    `"Gramin Cart" <${config.mailFromAddress}>`,
+            from:    `"Kolkata Kart" <${config.mailFromAddress}>`,
             to:      options.email,
             subject: options.subject,
             text:    options.message,

@@ -211,7 +211,7 @@ exports.placeOrder = async (req, res) => {
         // ── 8. Background notifications ───────────────────────────────────
         fireAndForget(async () => {
             const { subject, html } = orderPlacedEmail(user.fullName, order.id, total, paymentMethod);
-            const message = `Hello ${user.name}! Order #${order.id} placed. Total: ₹${total}. – GraminKart`;
+            const message = `Hello ${user.name}! Order #${order.id} placed. Total: ₹${total}. – KolkataKart`;
             await sendNotification({ phone: user.phone, email: user.email, subject, message, html });
 
             if (user.phone) {
@@ -222,7 +222,7 @@ exports.placeOrder = async (req, res) => {
                     `Total     : Rs.${total}\n` +
                     `Payment   : ${paymentMethod}\n\n` +
                     `We will notify you once it's shipped.\n` +
-                    `– GraminKart Team`;
+                    `– KolkataKart Team`;
                 await sendSms(user.phone, smsMessage);
             }
         }, 'place-order-notifications');
@@ -310,7 +310,7 @@ exports.cancelOrder = async (req, res) => {
                     `Hello ${user.name || user.fullName}!\n\n` +
                     `Your order #${order.orderNumber} has been cancelled.\n` +
                     `If you did not request this, please contact support.\n\n` +
-                    `– GraminKart Team`;
+                    `– KolkataKart Team`;
 
                 await sendSms(user.phone, smsMessage);
             }
@@ -430,7 +430,7 @@ exports.adminUpdateOrderStatus = async (req, res) => {
             if (!customer) return;
 
             const { subject, html } = orderStatusEmail(customer.fullName, order.id, status);
-            const message = `Hello ${customer.name}! Your order #${order.id} status: ${status}. – GraminKart`;
+            const message = `Hello ${customer.name}! Your order #${order.id} status: ${status}. – KolkataKart`;
             await sendNotification({ phone: customer.phone, email: customer.email, subject, message, html });
 
             if (customer.phone) {
@@ -447,7 +447,7 @@ exports.adminUpdateOrderStatus = async (req, res) => {
                 const smsMessage =
                     `Hello ${customer.name || customer.fullName}!\n\n` +
                     (statusMessages[status] || `Your order #${order.id} status: ${status}`) +
-                    `\n\n– GraminKart Team`;
+                    `\n\n– KolkataKart Team`;
 
                 await sendSms(customer.phone, smsMessage);
             }
@@ -518,7 +518,7 @@ exports.adminAssignRider = async (req, res) => {
                         `Driver : ${driver.fullName}\n` +
                         `Phone  : ${driver.phone}\n\n` +
                         `Your order is on its way!\n` +
-                        `– GraminKart Team`;
+                        `– KolkataKart Team`;
 
                     await sendSms(customer.phone, customerSms);
                 }
@@ -537,7 +537,7 @@ exports.adminAssignRider = async (req, res) => {
                 phone: driver.phone,
                 email: driver.email,
                 subject: ds,
-                message: `New order #${order.id} assigned to you. – GraminKart`,
+                message: `New order #${order.id} assigned to you. – KolkataKart`,
                 html: dh,
             });
 
@@ -550,7 +550,7 @@ exports.adminAssignRider = async (req, res) => {
                     `Customer : ${order.shippingAddress?.name || ''}\n` +
                     `Phone    : ${order.shippingAddress?.phone || ''}\n\n` +
                     `Please pick it up as soon as possible.\n` +
-                    `– GraminKart Team`;
+                    `– KolkataKart Team`;
 
                 await sendSms(driver.phone, driverSms);
             }

@@ -38,7 +38,7 @@ function generateInvoiceHTML(order, opts = {}) {
 
     const {
         logoPath = "src/assets/logo.png",
-        shopName = "Gramin Cart",
+        shopName = "Kolkata Kart",
         taxes    = [],   // ← active taxes array [ { taxName, percentage }, ... ]
     } = opts;
 
@@ -282,7 +282,7 @@ function generateInvoiceHTML(order, opts = {}) {
   <div class="header">
     <div class="logo-row">
       ${logoSrc ? `<img src="${logoSrc}" class="logo" alt="logo"/>` : ""}
-      <h1 class="shop-name">GraminCart</h1>
+      <h1 class="shop-name">KolkataKart</h1>
     </div>
   </div>
 

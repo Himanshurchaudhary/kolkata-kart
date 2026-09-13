@@ -235,15 +235,15 @@ const UserFooter = () => {
             <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
               <li style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 13, color: '#9ca3af' }}>
                 <MapPin size={15} color="#22c55e" style={{ flexShrink: 0 }} />
-                District: Gopalganj , State: Bihar , PIN Code: 841409
+                District: North 24 Parganas  , State: West Bengal , PIN Code: 743424
               </li>
               <li style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 13, color: '#9ca3af' }}>
                 <Phone size={15} color="#22c55e" style={{ flexShrink: 0 }} />
-                +91 80830 42829
+                +91 96798 52485
               </li>
               <li style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 13, color: '#9ca3af' }}>
                 <Mail size={15} color="#22c55e" style={{ flexShrink: 0 }} />
-                 ecogrowbazar@gmail.com
+                ecogrowbazar@gmail.com
               </li>
             </ul>
           </div>

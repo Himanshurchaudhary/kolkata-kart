@@ -8,7 +8,7 @@ const sections = [
     content: [
       {
         subtitle: "Personal Information",
-        text: "When you create an account or place an order on Gramin Cart, we collect your name, email address, phone number, and delivery address to process and fulfill your orders.",
+        text: "When you create an account or place an order on Kolkata Kart, we collect your name, email address, phone number, and delivery address to process and fulfill your orders.",
       },
       {
         subtitle: "Usage Data",
@@ -16,7 +16,7 @@ const sections = [
       },
       {
         subtitle: "Payment Information",
-        text: "Payment transactions are processed through secure, encrypted third-party gateways. Gramin Cart does not store your full card details on our servers.",
+        text: "Payment transactions are processed through secure, encrypted third-party gateways. Kolkata Kart does not store your full card details on our servers.",
       },
     ],
   },
@@ -50,11 +50,11 @@ const sections = [
       },
       {
         subtitle: "No Third-Party Selling",
-        text: "Gramin Cart does not sell, rent, or trade your personal information to any third-party marketers or advertisers.",
+        text: "Kolkata Kart does not sell, rent, or trade your personal information to any third-party marketers or advertisers.",
       },
       {
         subtitle: "Legal Obligations",
-        text: "We may disclose your information if required by law, court order, or to protect the rights and safety of Gramin Cart, our users, or the public.",
+        text: "We may disclose your information if required by law, court order, or to protect the rights and safety of Kolkata Kart, our users, or the public.",
       },
     ],
   },
@@ -69,7 +69,7 @@ const sections = [
       },
       {
         subtitle: "Access Control",
-        text: "Only authorized Gramin Cart personnel have access to your personal data, and only to the extent necessary to perform their duties.",
+        text: "Only authorized Kolkata Kart personnel have access to your personal data, and only to the extent necessary to perform their duties.",
       },
       {
         subtitle: "Breach Response",
@@ -88,7 +88,7 @@ const sections = [
       },
       {
         subtitle: "Deletion",
-        text: "You may request the deletion of your account and associated data at any time by contacting our support team at graminkartdc@gmail.com.",
+        text: "You may request the deletion of your account and associated data at any time by contacting our support team at support@kolkata.in.",
       },
       {
         subtitle: "Opt-Out",
@@ -122,7 +122,7 @@ const sections = [
     content: [
       {
         subtitle: "Age Restriction",
-        text: "Gramin Cart is not directed at children under the age of 13. We do not knowingly collect personal information from children.",
+        text: "Kolkata Kart is not directed at children under the age of 13. We do not knowingly collect personal information from children.",
       },
       {
         subtitle: "Parental Action",
@@ -152,7 +152,6 @@ export default function PrivacyPolicy() {
 
   return (
     <div className="min-h-screen bg-[#FAFAF7] font-sans">
-      {/* Google Fonts */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap');
 
@@ -160,7 +159,7 @@ export default function PrivacyPolicy() {
         body { margin: 0; }
 
         .hero-bg {
-          background: radial-gradient(ellipse at 60% 40%, #4cdb65 0%, #22c55e 30%, #16a34a 60%, #15803d 100%);
+          background: radial-gradient(ellipse at 60% 40%, #38bdf8 0%, #0ea5e9 30%, #0284c7 60%, #0369a1 100%);
           position: relative;
           overflow: hidden;
         }
@@ -171,7 +170,7 @@ export default function PrivacyPolicy() {
           background: radial-gradient(ellipse at 30% 60%, rgba(255,255,255,0.13) 0%, transparent 55%),
                       radial-gradient(ellipse at 80% 10%, rgba(255,255,255,0.07) 0%, transparent 40%);
         }
-        .leaf-pattern {
+        .wave-pattern {
           position: absolute;
           left: -30px;
           top: 50%;
@@ -179,17 +178,17 @@ export default function PrivacyPolicy() {
           width: 180px;
           height: 260px;
           opacity: 0.13;
-          background: linear-gradient(160deg, #bbf7d0, transparent 70%);
+          background: linear-gradient(160deg, #bae6fd, transparent 70%);
           border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
         }
-        .leaf-pattern2 {
+        .wave-pattern2 {
           position: absolute;
           right: -20px;
           bottom: -40px;
           width: 300px;
           height: 300px;
           opacity: 0.08;
-          background: radial-gradient(circle, #d4edda 30%, transparent 70%);
+          background: radial-gradient(circle, #e0f2fe 30%, transparent 70%);
           border-radius: 50%;
         }
         .section-card {
@@ -197,12 +196,12 @@ export default function PrivacyPolicy() {
           cursor: pointer;
         }
         .section-card:hover {
-          box-shadow: 0 8px 32px rgba(45, 106, 79, 0.12);
+          box-shadow: 0 8px 32px rgba(2, 132, 199, 0.12);
           transform: translateY(-2px);
         }
         .section-card.active {
-          border-color: #2d6a4f !important;
-          box-shadow: 0 8px 32px rgba(45, 106, 79, 0.18);
+          border-color: #0284c7 !important;
+          box-shadow: 0 8px 32px rgba(2, 132, 199, 0.18);
         }
         .content-reveal {
           animation: slideDown 0.3s ease;
@@ -222,21 +221,21 @@ export default function PrivacyPolicy() {
           text-transform: uppercase;
         }
         .divider {
-          background: linear-gradient(to right, #2d6a4f, #52b788, transparent);
+          background: linear-gradient(to right, #0284c7, #38bdf8, transparent);
         }
         .toc-link {
           transition: color 0.2s, padding-left 0.2s;
           text-decoration: none;
-          color: #4a7c59;
+          color: #0369a1;
           font-family: 'DM Sans', sans-serif;
           font-size: 14px;
         }
         .toc-link:hover {
-          color: #1a4731;
+          color: #0c4a6e;
           padding-left: 4px;
         }
         .contact-box {
-          background: radial-gradient(ellipse at 60% 40%, #4cdb65 0%, #22c55e 30%, #16a34a 60%, #15803d 100%);
+          background: radial-gradient(ellipse at 60% 40%, #38bdf8 0%, #0ea5e9 30%, #0284c7 60%, #0369a1 100%);
           position: relative;
           overflow: hidden;
         }
@@ -266,20 +265,20 @@ export default function PrivacyPolicy() {
 
       {/* Hero Header */}
       <div className="hero-bg relative px-6 py-16 md:py-24">
-        <div className="leaf-pattern"></div>
-        <div className="leaf-pattern2"></div>
-        {/* Watermark logo - top left like screenshot */}
+        <div className="wave-pattern"></div>
+        <div className="wave-pattern2"></div>
+        {/* Watermark */}
         <div style={{
           position: "absolute", left: "24px", top: "50%", transform: "translateY(-50%)",
           fontFamily: "'DM Sans', sans-serif", fontWeight: 900, fontSize: "5rem",
           color: "rgba(255,255,255,0.1)", lineHeight: 1, letterSpacing: "-4px",
           userSelect: "none", pointerEvents: "none"
         }}>
-          GK
+          KK
         </div>
         <div className="relative z-10 max-w-4xl mx-auto text-center">
           <span className="badge inline-block px-4 py-1.5 rounded-full mb-6">
-            🌿 Gramin Cart — Est. 2026
+            🛒 Kolkata Kart · Est. 2025
           </span>
           <h1
             className="mb-4"
@@ -299,13 +298,13 @@ export default function PrivacyPolicy() {
             className="max-w-xl mx-auto"
             style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "1.05rem", lineHeight: 1.7, color: "rgba(255,255,255,0.85)" }}
           >
-            At Gramin Cart, your trust is our harvest. We are transparent about how
+            At Kolkata Kart, your trust matters to us. We are transparent about how
             we collect, use, and protect your personal information.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-4 text-sm" style={{ fontFamily: "'DM Sans', sans-serif", color: "rgba(255,255,255,0.7)" }}>
-            <span>📅 Effective: January 1, 2026</span>
+            <span>📅 Effective: January 1, 2025</span>
             <span className="opacity-40">|</span>
-            <span>📅 Last Updated: June 2026</span>
+            <span>📅 Last Updated: 2025</span>
             <span className="opacity-40">|</span>
             <span>📍 India</span>
           </div>
@@ -341,10 +340,10 @@ export default function PrivacyPolicy() {
                   </a>
                 ))}
               </nav>
-              <div className="mt-8 p-4 rounded-xl bg-green-50 border border-green-100">
-                <p className="text-xs text-green-800" style={{ fontFamily: "'DM Sans', sans-serif", lineHeight: 1.6 }}>
+              <div className="mt-8 p-4 rounded-xl bg-blue-50 border border-blue-100">
+                <p className="text-xs text-blue-800" style={{ fontFamily: "'DM Sans', sans-serif", lineHeight: 1.6 }}>
                   Questions? Contact us at<br />
-                  <a href="mailto:graminkartdc@gmail.com" className="font-semibold underline">graminkartdc@gmail.com</a>
+                  <a href="mailto:support@kolkata.in" className="font-semibold underline">support@kolkata.in</a>
                 </p>
               </div>
             </div>
@@ -358,10 +357,10 @@ export default function PrivacyPolicy() {
                 className="text-gray-600"
                 style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "0.97rem", lineHeight: 1.8 }}
               >
-                This Privacy Policy explains how <strong className="text-[#1a4731]">Gramin Cart</strong> ("we", "our", or "us") collects,
+                This Privacy Policy explains how <strong className="text-[#0369a1]">Kolkata Kart</strong> ("we", "our", or "us") collects,
                 uses, shares, and protects information obtained from users ("you") of our website and mobile application.
-                By using Gramin Cart, you agree to the practices described in this policy.
-                This policy applies to all services offered by Gramin Cart in India since our founding in 2026.
+                By using Kolkata Kart, you agree to the practices described in this policy.
+                This policy applies to all services offered by Kolkata Kart in India.
               </p>
             </div>
 
@@ -371,7 +370,7 @@ export default function PrivacyPolicy() {
                 key={section.id}
                 id={section.id}
                 className={`section-card bg-white rounded-2xl border overflow-hidden ${
-                  activeSection === section.id ? "active border-[#2d6a4f]" : "border-gray-100"
+                  activeSection === section.id ? "active border-[#0284c7]" : "border-gray-100"
                 }`}
                 onClick={() =>
                   setActiveSection(activeSection === section.id ? null : section.id)
@@ -380,9 +379,7 @@ export default function PrivacyPolicy() {
                 {/* Header */}
                 <div className="flex items-center justify-between px-6 py-5">
                   <div className="flex items-center gap-3">
-                    <span
-                      className="w-9 h-9 rounded-xl bg-green-50 flex items-center justify-center text-lg shrink-0"
-                    >
+                    <span className="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center text-lg shrink-0">
                       {section.icon}
                     </span>
                     <h2
@@ -397,7 +394,7 @@ export default function PrivacyPolicy() {
                     </h2>
                   </div>
                   <span
-                    className="text-[#2d6a4f] text-xl transition-transform duration-200"
+                    className="text-[#0284c7] text-xl transition-transform duration-200"
                     style={{
                       transform: activeSection === section.id ? "rotate(45deg)" : "rotate(0deg)",
                       display: "inline-block",
@@ -415,7 +412,7 @@ export default function PrivacyPolicy() {
                       {section.content.map((item, i) => (
                         <div key={i}>
                           <h3
-                            className="text-[#1a4731] mb-1"
+                            className="text-[#0369a1] mb-1"
                             style={{
                               fontFamily: "'DM Sans', sans-serif",
                               fontWeight: 600,
@@ -446,7 +443,7 @@ export default function PrivacyPolicy() {
 
             {/* Contact Box */}
             <div className="contact-box rounded-2xl p-8 text-white mt-2">
-              <div className="contact-watermark">GK</div>
+              <div className="contact-watermark">KK</div>
               <div className="relative z-10">
                 <span className="badge inline-block px-4 py-1.5 rounded-full mb-4 text-xs" style={{ letterSpacing: "1.5px" }}>
                   📬 GET IN TOUCH
@@ -467,27 +464,25 @@ export default function PrivacyPolicy() {
                 </p>
                 <div className="flex flex-wrap gap-3">
                   <a
-                    href="mailto:graminkartdc@gmail.com"
-                    className="bg-white text-[#15803d] px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-yellow-50 transition-colors"
-                    style={{ fontFamily: "'DM Sans', sans-serif" }}
+                    href="mailto:support@kolkata.in"
+                    className="bg-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-yellow-50 transition-colors"
+                    style={{ fontFamily: "'DM Sans', sans-serif", color: "#0369a1" }}
                     onClick={(e) => e.stopPropagation()}
                   >
-                    📧 graminkartdc@gmail.com
+                    📧 support@kolkata.in
                   </a>
                   <a
-                    href="tel:+911800000000"
-                    className="border border-white/30 text-white px-5 py-2.5 rounded-xl font-semibold text-sm transition-colors"
-                    style={{ fontFamily: "'DM Sans', sans-serif", background: "rgba(255,255,255,0.15)", backdropFilter: "blur(4px)" }}
+                    href="tel:+919679852485"
+                    className="border text-white px-5 py-2.5 rounded-xl font-semibold text-sm transition-colors"
+                    style={{ fontFamily: "'DM Sans', sans-serif", borderColor: "rgba(255,255,255,0.3)", background: "rgba(255,255,255,0.15)", backdropFilter: "blur(4px)" }}
                     onClick={(e) => e.stopPropagation()}
                   >
-                    📞 80830 42829
+                    📞 +91 96798 52485
                   </a>
                 </div>
               </div>
             </div>
 
-            {/* Footer Note */}
-        
           </div>
         </div>
       </div>

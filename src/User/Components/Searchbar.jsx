@@ -75,7 +75,6 @@ const Highlight = ({ text = "", query = "" }) => {
     </span>
   );
 };
-const API_BASEA = import.meta.env.VITE_API_URL;
 
 // ─── Main SearchBar Component ─────────────────────────────────────────────────
 export default function SearchBar({ placeholder = "Search products or categories…" }) {

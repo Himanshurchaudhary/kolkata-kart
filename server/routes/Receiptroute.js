@@ -7,7 +7,7 @@ const { generateReceiptPDF }   = require('../Paymentreceipt/Generatereceiptpdf')
 const { protect, protectUser } = require('../middleware/authMiddleware');
 
 const LOGO_PATH = 'src/assets/logo.jpg';
-const SHOP_NAME = 'Gramin Kart';
+const SHOP_NAME = 'Kolkata Kart';
 
 // GET /api/orders/:id/receipt
 // Admins see any order; users only see their own

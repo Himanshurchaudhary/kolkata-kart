@@ -57,8 +57,8 @@ function orderStatusStyle(status) {
 function generatePaymentReceiptHTML(order, logoPath, taxes = []) {
   const logoBase64 = localImageToBase64(logoPath);
   const logoTag    = logoBase64
-    ? `<img src="${logoBase64}" alt="Gramin Cart" class="logo-img" />`
-    : `<span class="logo-text">Gramin Cart</span>`;
+    ? `<img src="${logoBase64}" alt="Kolkata Kart" class="logo-img" />`
+    : `<span class="logo-text">Kolkata Kart</span>`;
 
   const addr      = order.shippingAddress || {};
   const addrParts = [addr.house, addr.road, addr.landmark, addr.city, addr.state, addr.pincode].filter(Boolean);
@@ -498,11 +498,11 @@ function generatePaymentReceiptHTML(order, logoPath, taxes = []) {
   <!-- FOOTER -->
   <div class="footer">
     <div class="footer-left">
-      <div class="footer-brand">Gramin Cart</div>
+      <div class="footer-brand">kolkata Kart</div>
       <div>Thank you for shopping with us!</div>
     </div>
     <div class="footer-right">
-      <div><a class="footer-link">support@gramincart.com</a></div>
+      <div><a class="footer-link">support@kolkatakart.in</a></div>
       <div style="margin-top:3px">Generated: ${fmtDateTime(new Date())}</div>
       <div style="margin-top:2px">Computer-generated receipt · No signature required</div>
     </div>

@@ -122,7 +122,7 @@ function PendingApproval({ seller }) {
           borderRadius: 10, padding: "12px 20px",
           fontSize: 13, color: "#2d5a1b", maxWidth: 340,
         }}>
-          Questions? Email <strong>graminkartdc@gmail.com</strong>
+          Questions? Email <strong>support@kolkatakart.in</strong>
         </div>
       </div>
     </>

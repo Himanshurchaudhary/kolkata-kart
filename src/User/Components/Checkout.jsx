@@ -62,7 +62,7 @@ const SectionHeader = ({ icon, title, action }) => (
 );
 
 // ─── Address Modal ─────────────────────────────────────────────────────────────
-function AddressModal({ addresses, selectedId, onSelect, onClose }) {
+function AddressModal({ addresses, selectedId, onSelect, onClose, navigate }) {
   return (
     <div onClick={e => e.target === e.currentTarget && onClose()} style={{
       position: "fixed", inset: 0, zIndex: 1100,
@@ -124,6 +124,23 @@ function AddressModal({ addresses, selectedId, onSelect, onClose }) {
               </div>
             );
           })}
+          <div style={{ padding: "12px 16px 20px", flexShrink: 0 }}>
+            <button
+              onClick={() => {
+                const redirectPath = sessionStorage.getItem("checkoutReturnUrl") || "checkout";
+                navigate(`/user/userDashboard?tab=address&redirect=${encodeURIComponent(redirectPath)}`);
+                onClose();
+              }}
+              style={{
+                width: "100%", padding: "14px 0", background: "none",
+                border: "2px dashed #16a34a", borderRadius: 14, color: "#16a34a",
+                fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: "inherit",
+                display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+              }}
+            >
+              <span style={{ fontSize: 20 }}>+</span> Add New Address
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -199,7 +216,7 @@ function SummaryRows({ subtotal, couponDiscount, taxableAmount, shippingCharge, 
 
       {couponDiscount > 0 && <>
         <Row label="Coupon Discount" value={`-₹${couponDiscount.toFixed(2)}`} valueColor="#ef4444" />
-        <Row label="After Discount"  value={`₹${taxableAmount.toFixed(2)}`} />
+        <Row label="After Discount" value={`₹${taxableAmount.toFixed(2)}`} />
       </>}
 
       <Row
@@ -428,10 +445,10 @@ export default function Checkout() {
 
   // ── Buy Now params ─────────────────────────────────────────────────────────
   const buyNowProductId = searchParams.get("buyNow");
-  const buyNowQty       = parseInt(searchParams.get("qty") || "1", 10);
+  const buyNowQty = parseInt(searchParams.get("qty") || "1", 10);
   // ✅ CHANGE 1: variantId URL se padho
   const buyNowVariantId = searchParams.get("variantId") || null;
-  const isBuyNow        = !!buyNowProductId;
+  const isBuyNow = !!buyNowProductId;
 
   const [cartItems, setCartItems] = useState([]);
   const [addresses, setAddresses] = useState([]);
@@ -458,6 +475,19 @@ export default function Checkout() {
   const [error, setError] = useState("");
 
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const buyNow = params.get("buyNow");
+    const qty = params.get("qty");
+    const variantId = params.get("variantId");
+    if (buyNow) {
+      let redirectPath = `checkout?buyNow=${buyNow}&qty=${qty || 1}`;
+      if (variantId) redirectPath += `&variantId=${variantId}`;
+      sessionStorage.setItem("checkoutReturnUrl", redirectPath);
+    } else {
+      sessionStorage.setItem("checkoutReturnUrl", "checkout");
+    }
+  }, []);
   useEffect(() => {
     const h = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener("resize", h);
@@ -588,11 +618,11 @@ export default function Checkout() {
     // ✅ CHANGE 3: variantId bhi order payload mein bhejo
     const buyNowPayload = isBuyNow
       ? {
-          buyNow: true,
-          productId: buyNowProductId,
-          quantity: buyNowQty,
-          variantId: buyNowVariantId ?? undefined,   // ← NEW
-        }
+        buyNow: true,
+        productId: buyNowProductId,
+        quantity: buyNowQty,
+        variantId: buyNowVariantId ?? undefined,   // ← NEW
+      }
       : {};
 
     try {
@@ -601,7 +631,7 @@ export default function Checkout() {
         if (!rzpData.success) { setError(rzpData.message || "Payment init failed"); setPlacing(false); return; }
         const options = {
           key: rzpData.key_id, amount: rzpData.amount, currency: "INR",
-          order_id: rzpData.order_id, name: "Gramin Kart", description: "Order Payment",
+          order_id: rzpData.order_id, name: "Kolkata Kart", description: "Order Payment",
           handler: async (response) => {
             const verify = await api.razorpayVerify({
               razorpay_order_id: response.razorpay_order_id,
@@ -828,7 +858,10 @@ export default function Checkout() {
                 {addresses.length === 0 ? (
                   <div style={{ border: "2px dashed #e5e7eb", borderRadius: 12, padding: "20px", textAlign: "center" }}>
                     <p style={{ margin: "0 0 12px", fontSize: 14, color: "#9ca3af" }}>No address saved yet.</p>
-                    <button onClick={() => navigate("/user/userDashboard")} style={{
+                    <button onClick={() => {
+                      const redirectPath = sessionStorage.getItem("checkoutReturnUrl") || "checkout";
+                      navigate(`/user/userDashboard?tab=address&redirect=${encodeURIComponent(redirectPath)}`);
+                    }} style={{
                       background: "#16a34a", color: "#fff", border: "none", borderRadius: 10,
                       padding: "11px 22px", fontSize: 13, fontWeight: 700, cursor: "pointer",
                       fontFamily: "inherit", minHeight: 46,
@@ -857,7 +890,8 @@ export default function Checkout() {
                   <div style={{ textAlign: "center", padding: "16px 0", fontSize: 13, color: "#9ca3af" }}>
                     No address selected.
                   </div>
-                )}
+                )
+                }
               </div>
 
               {/* ── Payment Method ── */}
@@ -989,12 +1023,14 @@ export default function Checkout() {
       )}
 
       {/* Address Modal */}
+      {/* Address Modal */}
       {showAddrModal && (
         <AddressModal
           addresses={addresses}
           selectedId={selectedAddressId}
           onSelect={setSelectedAddressId}
           onClose={() => setShowAddrModal(false)}
+          navigate={navigate}
         />
       )}
     </div>

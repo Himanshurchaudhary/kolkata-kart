@@ -183,7 +183,7 @@ function LoginPage({ onSwitch }) {
         <div style={{ textAlign: "center", marginBottom: 28 }}>
           <h2 style={{ color: "#2d5a1b", margin: "0 0 6px", fontSize: 24, fontWeight: 800 }}>Seller Login</h2>
           <p style={{ color: "#6b7280", fontSize: 14, margin: 0 }}>
-            Sign in to your Gramin Cart seller account
+            Sign in to your kolkata Kart seller account
           </p>
         </div>
         <div style={{ background: "#fff", borderRadius: 16, padding: "28px 24px", boxShadow: "0 4px 24px rgba(58,125,30,.1)", border: "1px solid #e8f5e1" }}>
@@ -610,7 +610,7 @@ function RegisterPage({ onSwitch }) {
           <SectionHeader icon="✅" title="Agreement" subtitle="Review and accept to complete registration" />
           <div style={{ background: "#f9fafb", border: "1px solid #e5e7eb", borderRadius: 10, padding: 16, marginBottom: 16, maxHeight: 180, overflowY: "auto", fontSize: 13, color: "#374151", lineHeight: 1.7 }}>
             <strong>Terms & Conditions</strong><br />
-            By registering as a seller on Gramin Cart, you agree to: maintain accurate product listings, deliver orders on time, abide by our quality standards, not sell counterfeit or prohibited goods, respond to customer queries within 24 hours, and follow all applicable Indian laws regarding food safety, GST, and commerce.
+            By registering as a seller on Kolkata Kart, you agree to: maintain accurate product listings, deliver orders on time, abide by our quality standards, not sell counterfeit or prohibited goods, respond to customer queries within 24 hours, and follow all applicable Indian laws regarding food safety, GST, and commerce.
           </div>
           <Field error={errors.termsAccepted}>
             <label style={{ display: "flex", alignItems: "flex-start", gap: 10, cursor: "pointer", fontSize: 14, color: "#374151" }}>
@@ -620,12 +620,12 @@ function RegisterPage({ onSwitch }) {
           </Field>
           <div style={{ background: "#f0fdf4", border: "1px solid #3a7d1e", borderRadius: 10, padding: 16, marginBottom: 16, fontSize: 13, color: "#2d5a1b", lineHeight: 1.7 }}>
             <strong>Commission Structure</strong><br />
-            Gramin Cart charges a <strong>15% commission</strong> on each successful order. Payouts are processed weekly to your registered UPI ID. Platform fee is non-refundable once order is confirmed.
+            Kolkata Kart charges a <strong>15% commission</strong> on each successful order. Payouts are processed weekly to your registered UPI ID. Platform fee is non-refundable once order is confirmed.
           </div>
           <Field error={errors.commissionAccepted}>
             <label style={{ display: "flex", alignItems: "flex-start", gap: 10, cursor: "pointer", fontSize: 14, color: "#374151" }}>
               <input type="checkbox" checked={form.commissionAccepted} onChange={set("commissionAccepted")} style={{ marginTop: 2, width: 16, height: 16, accentColor: "#3a7d1e" }} />
-              I agree to pay <strong>&nbsp;15% commission&nbsp;</strong> per order to Gramin Cart
+              I agree to pay <strong>&nbsp;15% commission&nbsp;</strong> per order to Kolkata Kart
             </label>
           </Field>
         </>
@@ -640,7 +640,7 @@ function RegisterPage({ onSwitch }) {
       <div style={{ maxWidth: 600, margin: "0 auto", padding: "0 16px" }}>
         <div style={{ textAlign: "center", marginBottom: 24 }}>
           <h2 style={{ color: "#2d5a1b", margin: "0 0 6px", fontSize: 22, fontWeight: 800 }}>Seller Registration</h2>
-          <p style={{ color: "#6b7280", fontSize: 13, margin: 0 }}>Join Gramin Cart and start selling today</p>
+          <p style={{ color: "#6b7280", fontSize: 13, margin: 0 }}>Join Kolkata Kart and start selling today</p>
         </div>
         <StepIndicator current={step} />
         <div style={{ background: "#fff", borderRadius: 16, padding: "24px 20px", boxShadow: "0 4px 24px rgba(58,125,30,.1)", border: "1px solid #e8f5e1" }}>
@@ -693,7 +693,7 @@ export default function SellerAuth() {
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <div style={{ width: 40, height: 40, background: "linear-gradient(135deg,#3a7d1e,#6ab04c)", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20 }}>🛒</div>
             <div>
-              <div style={{ fontWeight: 800, fontSize: 16, color: "#3a7d1e", lineHeight: 1 }}>Gramin Cart</div>
+              <div style={{ fontWeight: 800, fontSize: 16, color: "#3a7d1e", lineHeight: 1 }}>Kolkata Kart</div>
               <div style={{ fontSize: 10, color: "#6b7280" }}>Seller Portal</div>
             </div>
           </div>
@@ -724,7 +724,7 @@ export default function SellerAuth() {
 
       {/* ── Footer ─────────────────────────────────────── */}
       <footer style={{ textAlign: "center", padding: "32px 16px 20px", color: "#9ca3af", fontSize: 12, marginTop: 40 }}>
-        © 2026 GraminCart · District Gopalganj, Bihar · graminkartdc@gmail.com
+        © 2026 KolkataKart · District North 24 Parganas , West Bengal · support@kolkatakart.in
       </footer>
     </>
   );

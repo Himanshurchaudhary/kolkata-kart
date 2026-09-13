@@ -42,6 +42,8 @@ const routes = [
   ['/api/dashboard', './routes/Dashboardroutes.js'],
   ['/api/seller', './routes/sellerRoutes.js'],
   ['/api/adminSellers', './routes/adminSellerRoutes.js'],
+    ['/api/admin/pincodes', './routes/adminPincodeRoutes'],
+
 ];
 for (const [path_, file] of routes) {
   try {

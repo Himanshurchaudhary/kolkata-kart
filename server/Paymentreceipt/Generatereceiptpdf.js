@@ -153,7 +153,7 @@ async function generateReceiptPDF(order, logoPath) {
                         columns: [
                             logoBase64
                                 ? { image: logoBase64, width: 44, height: 44 }
-                                : { text: "Gramin Cart", fontSize: 18, bold: true, color: "#fff", margin: [0, 10, 0, 0] },
+                                : { text: "Kolkata Kart", fontSize: 18, bold: true, color: "#fff", margin: [0, 10, 0, 0] },
                             { text: "", width: "*" },
                             {
                                 stack: [
@@ -345,8 +345,8 @@ async function generateReceiptPDF(order, logoPath) {
                     widths: ["*"],
                     body: [[{
                         columns: [
-                            { stack: [{ text: "Gramin Cart", bold: true, fontSize: 11, color: GREEN }, { text: "Thank you for shopping with us!", fontSize: 10, color: "#64748b", margin: [0, 2, 0, 0] }] },
-                            { stack: [{ text: "support@gramincart.com", fontSize: 10, color: GREEN, alignment: "right" }, { text: "Generated: " + fmtDateTime(new Date()), fontSize: 9, color: "#94a3b8", alignment: "right", margin: [0, 2, 0, 0] }, { text: "Computer-generated receipt · No signature required", fontSize: 9, color: "#94a3b8", alignment: "right" }] },
+                            { stack: [{ text: "Kolkata Kart", bold: true, fontSize: 11, color: GREEN }, { text: "Thank you for shopping with us!", fontSize: 10, color: "#64748b", margin: [0, 2, 0, 0] }] },
+                            { stack: [{ text: "support@kolkatakart.in", fontSize: 10, color: GREEN, alignment: "right" }, { text: "Generated: " + fmtDateTime(new Date()), fontSize: 9, color: "#94a3b8", alignment: "right", margin: [0, 2, 0, 0] }, { text: "Computer-generated receipt · No signature required", fontSize: 9, color: "#94a3b8", alignment: "right" }] },
                         ],
                         fillColor: LGREY,
                         margin: [16, 12, 16, 12],

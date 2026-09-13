@@ -4,18 +4,7 @@ import { X, Eye, EyeOff, ChevronDown } from 'lucide-react';
 const API_URL = import.meta.env.VITE_API_URL;
 
 const COUNTRIES = [
-  'Afghanistan', 'Albania', 'Algeria', 'Argentina', 'Australia',
-  'Austria', 'Bangladesh', 'Belgium', 'Brazil', 'Canada',
-  'China', 'Colombia', 'Czech Republic', 'Denmark', 'Egypt',
-  'Ethiopia', 'Finland', 'France', 'Germany', 'Ghana',
-  'Greece', 'Hungary', 'India', 'Indonesia', 'Iran',
-  'Iraq', 'Ireland', 'Israel', 'Italy', 'Japan',
-  'Jordan', 'Kenya', 'Malaysia', 'Mexico', 'Morocco',
-  'Netherlands', 'New Zealand', 'Nigeria', 'Norway', 'Pakistan',
-  'Philippines', 'Poland', 'Portugal', 'Romania', 'Russia',
-  'Saudi Arabia', 'South Africa', 'South Korea', 'Spain', 'Sri Lanka',
-  'Sweden', 'Switzerland', 'Thailand', 'Turkey', 'Ukraine',
-  'United Arab Emirates', 'United Kingdom', 'United States', 'Vietnam',
+  'India'
 ];
 
 
@@ -153,7 +142,7 @@ const LoginForm = ({ onSwitch, onClose, onLoginSuccess }) => {
               value={identifier}
               onChange={e => setIdentifier(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="user@gramincart.com"
+              placeholder="user@kolkatakartart.com"
               className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
             />
           </div>

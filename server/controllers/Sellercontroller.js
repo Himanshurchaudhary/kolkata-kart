@@ -110,9 +110,9 @@ const sendOtp = async (req, res) => {
     // Send OTP email — failure is caught and logged, but does NOT block response
     try {
       const info = await transporter.sendMail({
-        from: `"Gramin Cart" <${process.env.EMAIL_USER}>`,
+        from: `"Kolkata Kart" <${process.env.EMAIL_USER}>`,
         to: email,
-        subject: "Your Gramin Cart Seller OTP",
+        subject: "Your Kolkata Kart Seller OTP",
         html: `
           <div style="font-family:sans-serif;max-width:480px;margin:auto;border:1px solid #e5e7eb;border-radius:12px;padding:32px">
             <h2 style="color:#2d5a1b;margin:0 0 8px">Verify Your Email</h2>
@@ -122,7 +122,7 @@ const sendOtp = async (req, res) => {
             </div>
             <p style="color:#9ca3af;font-size:13px">Valid for <strong>10 minutes</strong>. Do not share this with anyone.</p>
             <hr style="border:none;border-top:1px solid #e5e7eb;margin:20px 0"/>
-            <p style="color:#9ca3af;font-size:12px;margin:0">© 2026 Gramin Cart, Gopalganj, Bihar</p>
+            <p style="color:#9ca3af;font-size:12px;margin:0">© 2026 kolkata Kart, Gopalganj, Bihar</p>
           </div>
         `,
       });
@@ -318,17 +318,17 @@ const registerSeller = async (req, res) => {
     // ── Send welcome email (non-blocking) ──────────────────────────
     try {
       await transporter.sendMail({
-        from: `"Gramin Cart" <${process.env.EMAIL_USER}>`,
+        from: `"Kolkata Kart" <${process.env.EMAIL_USER}>`,
         to: email.trim().toLowerCase(),
-        subject: "Welcome to Gramin Cart — Registration Received",
+        subject: "Welcome to Kolkata Kart — Registration Received",
         html: `
           <div style="font-family:sans-serif;max-width:480px;margin:auto;border:1px solid #e5e7eb;border-radius:12px;padding:32px">
             <h2 style="color:#2d5a1b">Welcome, ${fullName}!</h2>
-            <p>Your seller registration on <strong>Gramin Cart</strong> has been received.</p>
+            <p>Your seller registration on <strong>Kolkata Kart</strong> has been received.</p>
             <p>Our team will review your details and <strong>approve your account within 24–48 hours</strong>. You will receive a confirmation email once approved.</p>
-            <p style="color:#9ca3af;font-size:13px">Questions? Write to us at graminkartdc@gmail.com</p>
+            <p style="color:#9ca3af;font-size:13px">Questions? Write to us at support@kolkata.in</p>
             <hr style="border:none;border-top:1px solid #e5e7eb;margin:20px 0"/>
-            <p style="color:#9ca3af;font-size:12px;margin:0">© 2026 Gramin Cart, Gopalganj, Bihar</p>
+            <p style="color:#9ca3af;font-size:12px;margin:0">© 2026 KolkataKart,</p>
           </div>
         `,
       });

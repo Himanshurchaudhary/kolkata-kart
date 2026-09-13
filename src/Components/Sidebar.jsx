@@ -7,14 +7,14 @@ import {
   Ticket, ChevronDown, Maximize, User, Home,
   Bell, Newspaper, BarChart3,
   Gift, Truck, Users, Briefcase, MessageSquare,
-  LogOut, Store, Menu, X
+  LogOut, Store, Menu, X, MapPin
 } from 'lucide-react';
 
 const Sidebar = ({ sidebarOpen = true, onDesktopToggle, mobileOpen, onMobileClose }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const isActive    = (path)  => location.pathname === path;
+  const isActive = (path) => location.pathname === path;
   const isAnyActive = (paths) => paths.some((p) => location.pathname === p);
 
   const handleLogout = () => {
@@ -49,6 +49,9 @@ const Sidebar = ({ sidebarOpen = true, onDesktopToggle, mobileOpen, onMobileClos
             <span>Overview</span>
           </div>
         </Link>
+
+        <SectionHeader title="Pincode Managemant" />
+        <NavItem to="/admin/pincode" icon={<MapPin size={20} />} label="Pincode" active={isActive('/admin/pincode')} onClick={onMobileClose} />
 
         {/* ONLINE ORDERS */}
         <SectionHeader title="ONLINE ORDERS" />
@@ -118,7 +121,7 @@ const Sidebar = ({ sidebarOpen = true, onDesktopToggle, mobileOpen, onMobileClos
         <NavItem to="/admin/customers" icon={<Users size={20} />} label="Customers" active={isActive('/admin/customers')} onClick={onMobileClose} />
 
         {/* ── SELLER MANAGEMENT (NEW) ── */}
-                <SectionHeader title="SELLER MANAGEMENT" />
+        <SectionHeader title="SELLER MANAGEMENT" />
 
         <NavItem
           to="/admin/sellers"
@@ -127,7 +130,7 @@ const Sidebar = ({ sidebarOpen = true, onDesktopToggle, mobileOpen, onMobileClos
           active={isActive('/admin/sellers')}
           onClick={onMobileClose}
         />
-<NavItem
+        <NavItem
           to="/admin/seller-products-approval"
           icon={<Store size={20} />}
           label="Seller Products Approval"
@@ -146,7 +149,7 @@ const Sidebar = ({ sidebarOpen = true, onDesktopToggle, mobileOpen, onMobileClos
         />
         <DropdownNavItem
           icon={<Briefcase size={20} />} label="Configure Dependence"
-          defaultOpen={isAnyActive(['/admin/paymentgateway','/admin/smsSetting','/admin/socialAuth','/admin/pusher','/admin/mailConfig','/admin/firebase'])}
+          defaultOpen={isAnyActive(['/admin/paymentgateway', '/admin/smsSetting', '/admin/socialAuth', '/admin/pusher', '/admin/mailConfig', '/admin/firebase'])}
           items={[
             { label: 'Payment Gateway', path: '/admin/paymentgateway' },
             { label: 'SMS Gateway', path: '/admin/smsSetting' },
@@ -256,7 +259,7 @@ const NavItem = ({ to, icon, label, active, giftIcon, onClick }) => (
 
 const DropdownNavItem = ({ icon, label, items, isActive, defaultOpen = false, onNav }) => {
   const [open, setOpen] = useState(defaultOpen);
-  const parentActive    = items.some((item) => isActive(item.path));
+  const parentActive = items.some((item) => isActive(item.path));
 
   return (
     <div>

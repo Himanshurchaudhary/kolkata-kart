@@ -1,8 +1,8 @@
 exports.driverWelcomeEmail = (fullName, phone, password) => ({
-  subject: 'Welcome to GraminCart – Your Login Credentials',
+  subject: 'Welcome to KolkataKart – Your Login Credentials',
   html: `
     <div style="font-family:sans-serif;max-width:480px;margin:auto;padding:24px;border:1px solid #e5e7eb;border-radius:12px;">
-      <h2 style="color:#16a34a;">Welcome to GraminCart! 🎉</h2>
+      <h2 style="color:#16a34a;">Welcome to KolkataKart! 🎉</h2>
       <p>Hello <strong>${fullName}</strong>,</p>
       <p>Your driver account has been created successfully.</p>
       <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:16px;margin:16px 0;">
@@ -11,7 +11,7 @@ exports.driverWelcomeEmail = (fullName, phone, password) => ({
         <p style="margin:4px 0 0;">🔒 Password: <strong>${password}</strong></p>
       </div>
       <p style="color:#6b7280;font-size:13px;">Please keep your credentials safe.</p>
-      <p style="color:#16a34a;font-weight:600;">– GraminCart Team</p>
+      <p style="color:#16a34a;font-weight:600;">– KolkataKart Team</p>
     </div>
   `,
 });
@@ -30,7 +30,7 @@ exports.orderPlacedEmail = (name, orderId, total, paymentMethod) => ({
         <p style="margin:6px 0 0;"><strong>Payment</strong>  : ${paymentMethod}</p>
       </div>
       <p style="color:#6b7280;font-size:13px;">We'll notify you once your order is shipped.</p>
-      <p style="color:#16a34a;font-weight:600;">– GraminCart Team</p>
+      <p style="color:#16a34a;font-weight:600;">– Kolkatakart Team</p>
     </div>
   `,
 });
@@ -53,8 +53,8 @@ exports.orderStatusEmail = (name, orderId, status) => {
         <h2 style="color:#16a34a;">${info.emoji} Order Update</h2>
         <p>Hello <strong>${name}</strong>,</p>
         <p>Your order <strong>#${orderId}</strong> ${info.text}</p>
-        <p style="color:#6b7280;font-size:13px;">Thank you for shopping with GraminCart.</p>
-        <p style="color:#16a34a;font-weight:600;">– GraminCart Team</p>
+        <p style="color:#6b7280;font-size:13px;">Thank you for shopping with Kolkatakart.</p>
+        <p style="color:#16a34a;font-weight:600;">– Kolkatakart Team</p>
       </div>
     `,
   };
@@ -72,7 +72,7 @@ exports.riderAssignedEmail = (customerName, orderId, driverName, driverPhone) =>
         <p style="margin:6px 0 0;"><strong>Phone</strong>  : ${driverPhone}</p>
       </div>
       <p style="color:#6b7280;font-size:13px;">Your order is on its way!</p>
-      <p style="color:#16a34a;font-weight:600;">– GraminCart Team</p>
+      <p style="color:#16a34a;font-weight:600;">– kolkataKart Team</p>
     </div>
   `,
 });
@@ -91,7 +91,7 @@ exports.driverAssignedEmail = (driverName, orderId, city, pincode, customerName,
         <p style="margin:6px 0 0;"><strong>Address</strong>   : ${city}, ${pincode}</p>
       </div>
       <p style="color:#6b7280;font-size:13px;">Please pick it up as soon as possible.</p>
-      <p style="color:#16a34a;font-weight:600;">– GraminCart Team</p>
+      <p style="color:#16a34a;font-weight:600;">– KolkataKart Team</p>
     </div>
   `,
 });

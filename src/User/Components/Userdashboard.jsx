@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import ChangePasswordTab from "../Pages/Changepasswordtab";
 import UserSupportTicket from "../Pages/Usersupportticket";
 import UserProfile from "../Pages/Userprofile";
@@ -705,6 +705,7 @@ const MobileDrawer = ({ open, onClose, activeTab, setActiveTab, profile, onLogou
 export default function UserDashboard() {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+  const [searchParams] = useSearchParams();
 
   const [activeTab, setActiveTab] = useState("dashboard");
   const [profile, setProfile] = useState(null);
@@ -742,6 +743,12 @@ export default function UserDashboard() {
   }, []);
 
   useEffect(() => { loadAll(); }, [loadAll]);
+  useEffect(() => {
+    const tab = searchParams.get("tab");
+    const redirect = searchParams.get("redirect");
+    if (tab) setActiveTab(tab);
+    if (redirect) sessionStorage.setItem("postAddressSaveRedirect", redirect);
+  }, [searchParams]);
 
   useEffect(() => {
     if (activeTab === "address") {
@@ -814,6 +821,11 @@ export default function UserDashboard() {
         setShowAddrModal(false);
         setEditingAddr(null);
         setToast({ message: editingAddr?.id ? "Address updated!" : "Address saved!", type: "success" });
+        const redirectTo = sessionStorage.getItem("postAddressSaveRedirect");
+        if (redirectTo) {
+          sessionStorage.removeItem("postAddressSaveRedirect");
+          setTimeout(() => navigate(`/user/${decodeURIComponent(redirectTo)}`), 800);
+        }
       } else {
         setToast({ message: res?.message || "Failed to save address", type: "remove" });
       }
