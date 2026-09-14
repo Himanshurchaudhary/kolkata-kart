@@ -1,7 +1,7 @@
 // src/components/UserNavbar.jsx
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, NavLink, useLocation } from 'react-router-dom';
-import { MapPin, Search, Heart, ShoppingCart, User, LogOut, X, Menu } from 'lucide-react';
+import { MapPin, Search, Heart, ShoppingCart, User, LogOut, X, Menu, Shield } from 'lucide-react';
 import AuthModal from '../Pages/UserLogin';
 import { fetchCart, fetchWishlist } from "../utils/cartWishlist";
 import CartDrawer from "../Components/Cartdrawer";
@@ -537,6 +537,31 @@ const UserNavbar = () => {
           >
             🛍️ Seller Login
           </a>
+          
+          <button
+            onClick={() => {
+              const adminToken = localStorage.getItem('adminToken');
+              if (adminToken) {
+                navigate('/admin/dash');
+              } else {
+                navigate('/admin/login');
+              }
+            }}
+            style={{
+              background: 'linear-gradient(135deg,#1e40af,#1d4ed8)',
+              color: '#fff', fontWeight: 700, fontSize: 13,
+              padding: '8px 18px', borderRadius: 10,
+              border: 'none', cursor: 'pointer',
+              display: 'flex', alignItems: 'center', gap: 6,
+              boxShadow: '0 4px 14px rgba(29,78,216,0.4)',
+              transition: 'transform 0.2s, box-shadow 0.2s',
+              whiteSpace: 'nowrap', marginRight: 12,
+            }}
+            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 6px 20px rgba(29,78,216,0.55)'; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 14px rgba(29,78,216,0.4)'; }}
+          >
+            <Shield size={14} /> Admin
+          </button>
 
           {isLoggedIn ? (
             <div className="flex items-center gap-5">
@@ -851,6 +876,27 @@ const UserNavbar = () => {
               >
                 🛍️ Seller login
               </a>
+              <button
+                onClick={() => {
+                  const adminToken = localStorage.getItem('adminToken');
+                  setMobileMenuOpen(false);
+                  if (adminToken) {
+                    navigate('/admin/dash');
+                  } else {
+                    navigate('/admin/login');
+                  }
+                }}
+                style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  gap: 6, background: 'linear-gradient(135deg,#1e40af,#1d4ed8)',
+                  color: '#fff', fontWeight: 700, fontSize: 13, borderRadius: 10,
+                  padding: '10px 0', border: 'none', cursor: 'pointer',
+                  width: '100%', marginBottom: 10,
+                  boxShadow: '0 4px 14px rgba(29,78,216,0.35)',
+                }}
+              >
+                <Shield size={14} /> Admin Login
+              </button>
               {isLoggedIn ? (
                 <div className="flex flex-col gap-2">
                   <button

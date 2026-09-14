@@ -243,7 +243,7 @@ const UserFooter = () => {
               </li>
               <li style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 13, color: '#9ca3af' }}>
                 <Mail size={15} color="#22c55e" style={{ flexShrink: 0 }} />
-                ecogrowbazar@gmail.com
+                support@kolkatakart.in
               </li>
             </ul>
           </div>

@@ -58,36 +58,36 @@ exports.addProduct = async (req, res) => {
 };
 
 exports.getAllProducts = async (req, res) => {
-  try {
-    const page       = parseInt(req.query.page)  || 1;
-    const limit      = parseInt(req.query.limit) || 10;
-    const search     = req.query.search     || "";
-    const categoryId = req.query.category   || "";
-    const showAll    = req.query.showAll    === "true"; // admin uses this
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const search = req.query.search || "";
+        const categoryId = req.query.category || "";
+        const showAll = req.query.showAll === "true"; // admin uses this
 
-    const filters = {};
-    if (search)     filters.search      = search;
-    if (categoryId) filters.category_id = Number(categoryId);
+        const filters = {};
+        if (search) filters.search = search;
+        if (categoryId) filters.category_id = Number(categoryId);
 
-    // Public/user routes only see approved products
-    // Admin passes ?showAll=true to see everything
-    if (!showAll) filters.status = "approved";
+        // Public/user routes only see approved products
+        // Admin passes ?showAll=true to see everything
+        if (!showAll) filters.status = "approved";
 
-    const products      = await Product.find(filters, { limit, skip: (page - 1) * limit });
-    const totalProducts = await Product.countDocuments(filters);
+        const products = await Product.find(filters, { limit, skip: (page - 1) * limit });
+        const totalProducts = await Product.countDocuments(filters);
 
-    res.status(200).json({
-      success: true,
-      count: products.length,
-      totalProducts,
-      totalPages: Math.ceil(totalProducts / limit),
-      currentPage: page,
-      products,
-    });
-  } catch (error) {
-    console.error("Get Products Error:", error.message);
-    res.status(500).json({ success: false, message: "Server Error", error: error.message });
-  }
+        res.status(200).json({
+            success: true,
+            count: products.length,
+            totalProducts,
+            totalPages: Math.ceil(totalProducts / limit),
+            currentPage: page,
+            products,
+        });
+    } catch (error) {
+        console.error("Get Products Error:", error.message);
+        res.status(500).json({ success: false, message: "Server Error", error: error.message });
+    }
 };
 
 exports.getProductById = async (req, res) => {
@@ -125,7 +125,11 @@ exports.updateProduct = async (req, res) => {
         if (name !== undefined) updateData.name = name;
         if (sku !== undefined) updateData.sku = sku;
         if (category !== undefined) updateData.category_id = Number(category);
-        if (brand !== undefined) updateData.brand_id = Number(brand);
+        if (brand !== undefined) {
+            updateData.brand_id = (brand === null || brand === "" || brand === "null" || brand === "0")
+                ? null
+                : Number(brand);
+        }
         if (buyingPrice !== undefined) updateData.buyingPrice = Number(buyingPrice);
         if (sellingPrice !== undefined) updateData.sellingPrice = Number(sellingPrice);
         if (stockQuantity !== undefined) updateData.stockQuantity = Number(stockQuantity);

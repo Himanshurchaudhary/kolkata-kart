@@ -82,6 +82,7 @@ export default function CategoryPage() {
     setUploadedFile(null);
     setEditId(cat.id);
     setActiveTab("add");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   async function handleSubmit() {
@@ -199,31 +200,262 @@ export default function CategoryPage() {
 
   return (
     <div style={styles.page}>
+      <style>{`
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+        * { box-sizing: border-box; }
+
+        .cat-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+          gap: 12px;
+        }
+        @media (min-width: 480px) {
+          .cat-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+        }
+        @media (min-width: 768px) {
+          .cat-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+        }
+
+        .stats-row {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 8px;
+          margin-bottom: 1rem;
+        }
+        @media (min-width: 480px) {
+          .stats-row { gap: 12px; margin-bottom: 1.5rem; }
+        }
+
+        .form-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 1rem;
+        }
+        @media (min-width: 600px) {
+          .form-grid { grid-template-columns: 1fr 1fr; }
+          .form-full { grid-column: 1 / -1; }
+        }
+
+        .topbar {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 1rem;
+          gap: 10px;
+          flex-wrap: wrap;
+        }
+
+        .search-row {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+          margin-bottom: 1rem;
+        }
+        @media (min-width: 600px) {
+          .search-row { flex-direction: row; align-items: center; }
+        }
+
+        .filter-row {
+          display: flex;
+          gap: 8px;
+          flex-wrap: wrap;
+        }
+
+        .cat-card {
+          background: #fff;
+          border: 1px solid #eee;
+          border-radius: 12px;
+          overflow: hidden;
+          transition: box-shadow 0.15s, transform 0.15s;
+          animation: fadeUp 0.2s ease;
+        }
+        .cat-card:hover {
+          box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+          transform: translateY(-2px);
+        }
+
+        .btn-primary {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          background: #1a7a4a;
+          color: #fff;
+          border: none;
+          padding: 10px 16px;
+          border-radius: 8px;
+          font-size: 14px;
+          font-weight: 600;
+          cursor: pointer;
+          white-space: nowrap;
+          font-family: inherit;
+          min-height: 42px;
+        }
+        .btn-primary:active { opacity: 0.85; }
+
+        .btn-ghost {
+          padding: 9px 14px;
+          border: 1px solid #ddd;
+          border-radius: 8px;
+          font-size: 14px;
+          cursor: pointer;
+          background: #fff;
+          color: #555;
+          font-family: inherit;
+          min-height: 42px;
+          white-space: nowrap;
+        }
+
+        .tab-bar {
+          display: flex;
+          gap: 0;
+          margin-bottom: 1rem;
+          background: #fff;
+          border: 1px solid #eee;
+          border-radius: 10px;
+          padding: 4px;
+          width: 100%;
+        }
+        @media (min-width: 400px) {
+          .tab-bar { width: fit-content; }
+        }
+
+        .tab-btn {
+          flex: 1;
+          padding: 9px 16px;
+          border-radius: 7px;
+          font-size: 13px;
+          font-weight: 500;
+          cursor: pointer;
+          border: none;
+          background: transparent;
+          color: #888;
+          font-family: inherit;
+          white-space: nowrap;
+          text-align: center;
+        }
+        @media (min-width: 400px) {
+          .tab-btn { flex: unset; font-size: 14px; padding: 8px 20px; }
+        }
+        .tab-btn.active { background: #1a7a4a; color: #fff; }
+
+        .icon-btn {
+          width: 34px;
+          height: 34px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border: 1px solid #eee;
+          border-radius: 7px;
+          cursor: pointer;
+          background: #fff;
+          font-size: 14px;
+          flex-shrink: 0;
+        }
+        .icon-btn-danger { color: #a32d2d; border-color: #fde8e8; background: #fff5f5; }
+
+        .toast {
+          position: fixed;
+          bottom: 80px;
+          left: 50%;
+          transform: translateX(-50%) translateY(0);
+          background: #1a7a4a;
+          color: #fff;
+          padding: 12px 20px;
+          border-radius: 10px;
+          font-size: 14px;
+          font-weight: 500;
+          z-index: 9999;
+          pointer-events: none;
+          box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+          white-space: nowrap;
+          transition: all 0.3s;
+        }
+        @media (min-width: 600px) {
+          .toast { bottom: 24px; left: auto; right: 24px; transform: translateX(0); }
+        }
+        .toast.error { background: #a32d2d; }
+        .toast.hidden { opacity: 0; transform: translateX(-50%) translateY(20px); }
+        @media (min-width: 600px) {
+          .toast.hidden { transform: translateX(0) translateY(20px); }
+        }
+
+        .stat-card {
+          background: #fff;
+          border: 1px solid #eee;
+          border-radius: 10px;
+          padding: 10px 12px;
+        }
+        @media (min-width: 480px) {
+          .stat-card { border-radius: 12px; padding: 1rem 1.25rem; }
+        }
+
+        .upload-zone {
+          border: 2px dashed #ddd;
+          border-radius: 8px;
+          padding: 1.5rem 1rem;
+          text-align: center;
+          cursor: pointer;
+          background: #fafafa;
+          transition: border-color 0.15s;
+          min-height: 120px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .upload-zone:hover { border-color: #1a7a4a; }
+
+        .form-input {
+          padding: 10px 12px;
+          border: 1px solid #ddd;
+          border-radius: 8px;
+          font-size: 14px;
+          background: #fff;
+          color: #1a1a1a;
+          outline: none;
+          font-family: inherit;
+          width: 100%;
+          min-height: 42px;
+        }
+        .form-input:focus { border-color: #1a7a4a; box-shadow: 0 0 0 3px rgba(26,122,74,0.1); }
+      `}</style>
+
       {/* Header */}
-      <div style={styles.topbar}>
+      <div className="topbar">
         <div>
-          <h1 style={styles.pageTitle}>Category Management</h1>
-          <p style={styles.pageSub}>Manage your product categories</p>
+          <h1 style={{ fontSize: 20, fontWeight: 700, color: "#1a1a1a", margin: 0 }}>
+            Category Management
+          </h1>
+          <p style={{ fontSize: 12, color: "#888", marginTop: 2 }}>
+            Manage your product categories
+          </p>
         </div>
         <button
-          style={styles.btnPrimary}
+          className="btn-primary"
           onClick={() => { resetForm(); setActiveTab("add"); }}
         >
-          <span style={{ fontSize: 18 }}>＋</span> Add Category
+          <span style={{ fontSize: 18, lineHeight: 1 }}>＋</span> Add Category
         </button>
       </div>
 
       {/* Stats */}
-      <div style={styles.statsRow}>
+      <div className="stats-row">
         {[
-          { label: "Total Categories", value: totalCount, badge: "all time", badgeType: "gray" },
-          { label: "Active", value: activeCount, badge: "✓ live on store", badgeType: "green" },
-          { label: "Inactive", value: inactiveCount, badge: "hidden", badgeType: "gray" },
+          { label: "Total", value: totalCount, badge: "all time", green: false },
+          { label: "Active", value: activeCount, badge: "✓ live", green: true },
+          { label: "Inactive", value: inactiveCount, badge: "hidden", green: false },
         ].map((s) => (
-          <div key={s.label} style={styles.statCard}>
-            <div style={styles.statLabel}>{s.label}</div>
-            <div style={styles.statValue}>{s.value}</div>
-            <span style={s.badgeType === "green" ? styles.badgeGreen : styles.badgeGray}>
+          <div key={s.label} className="stat-card">
+            <div style={{ fontSize: 11, color: "#888", marginBottom: 4 }}>{s.label}</div>
+            <div style={{ fontSize: 24, fontWeight: 700, color: "#1a1a1a", lineHeight: 1 }}>
+              {s.value}
+            </div>
+            <span style={{
+              display: "inline-block", fontSize: 10, padding: "2px 8px",
+              borderRadius: 20, marginTop: 4, fontWeight: 500,
+              background: s.green ? "#e1f5ee" : "#f0f0f0",
+              color: s.green ? "#0f6e56" : "#666",
+            }}>
               {s.badge}
             </span>
           </div>
@@ -231,66 +463,76 @@ export default function CategoryPage() {
       </div>
 
       {/* Tabs */}
-      <div style={styles.tabs}>
+      <div className="tab-bar">
         <button
-          style={{ ...styles.tab, ...(activeTab === "view" ? styles.tabActive : {}) }}
+          className={`tab-btn${activeTab === "view" ? " active" : ""}`}
           onClick={() => { setActiveTab("view"); fetchCategories(); }}
         >
-          ⊞ View Categories
+          ⊞ View
         </button>
         <button
-          style={{ ...styles.tab, ...(activeTab === "add" ? styles.tabActive : {}) }}
+          className={`tab-btn${activeTab === "add" ? " active" : ""}`}
           onClick={() => { resetForm(); setActiveTab("add"); }}
         >
-          ＋ {editId ? "Edit Category" : "Add Category"}
+          ＋ {editId ? "Edit" : "Add"}
         </button>
       </div>
 
-      {/* View Tab */}
+      {/* ── VIEW TAB ── */}
       {activeTab === "view" && (
         <div style={styles.panel}>
-          <div style={styles.searchRow}>
+
+          {/* Search + Filter */}
+          <div className="search-row">
             <div style={{ position: "relative", flex: 1 }}>
-              <span style={styles.searchIcon}>🔍</span>
+              <span style={{
+                position: "absolute", left: 11, top: "50%",
+                transform: "translateY(-50%)", fontSize: 14, color: "#aaa",
+              }}>🔍</span>
               <input
-                style={styles.searchInput}
+                className="form-input"
+                style={{ paddingLeft: 36 }}
                 placeholder="Search categories..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
             </div>
-            <select
-              style={styles.filterSelect}
-              value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value)}
-            >
-              <option value="all">All Status</option>
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
-            </select>
-            <button style={styles.btnGhost} onClick={fetchCategories}>
-              ↻ Refresh
-            </button>
+            <div className="filter-row">
+              <select
+                className="form-input"
+                style={{ minWidth: 120, cursor: "pointer" }}
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value)}
+              >
+                <option value="all">All Status</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+              <button className="btn-ghost" onClick={fetchCategories}>
+                ↻ Refresh
+              </button>
+            </div>
           </div>
 
           {loading ? (
-            <div style={styles.emptyState}>
+            <div style={{ textAlign: "center", padding: "3rem 1rem" }}>
               <div style={styles.spinner} />
               <p style={{ color: "#888", marginTop: 16 }}>Loading categories...</p>
             </div>
           ) : filtered.length === 0 ? (
-            <div style={styles.emptyState}>
+            <div style={{ textAlign: "center", padding: "3rem 1rem" }}>
               <div style={{ fontSize: 48, marginBottom: 12 }}>📂</div>
               <p style={{ color: "#888" }}>No categories found</p>
               <button
-                style={{ ...styles.btnPrimary, marginTop: 16 }}
+                className="btn-primary"
+                style={{ marginTop: 16 }}
                 onClick={() => { resetForm(); setActiveTab("add"); }}
               >
                 Add your first category
               </button>
             </div>
           ) : (
-            <div style={styles.catGrid}>
+            <div className="cat-grid">
               {filtered.map((cat) => (
                 <CategoryCard
                   key={cat.id}
@@ -305,29 +547,35 @@ export default function CategoryPage() {
         </div>
       )}
 
-      {/* Add/Edit Tab */}
+      {/* ── ADD/EDIT TAB ── */}
       {activeTab === "add" && (
         <div style={styles.panel}>
-          <div style={styles.panelTitle}>
-            <span style={{ color: "#1a7a4a", fontSize: 20 }}>📁</span>
+          <div style={{
+            fontSize: 15, fontWeight: 700, color: "#1a1a1a",
+            marginBottom: "1.25rem", display: "flex", alignItems: "center", gap: 8,
+          }}>
+            <span style={{ color: "#1a7a4a", fontSize: 18 }}>📁</span>
             {editId ? "Edit Category" : "New Category"}
           </div>
-          <div style={styles.formGrid}>
+
+          <div className="form-grid">
             <div style={styles.formGroup}>
               <label style={styles.formLabel}>
                 Category name <span style={{ color: "#e24b4a" }}>*</span>
               </label>
               <input
-                style={styles.formInput}
+                className="form-input"
                 placeholder="e.g. Fresh Vegetables"
                 value={form.name}
                 onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
               />
             </div>
+
             <div style={styles.formGroup}>
               <label style={styles.formLabel}>Status</label>
               <select
-                style={styles.formSelect}
+                className="form-input"
+                style={{ cursor: "pointer" }}
                 value={form.isActive}
                 onChange={(e) => setForm((f) => ({ ...f, isActive: e.target.value }))}
               >
@@ -335,21 +583,24 @@ export default function CategoryPage() {
                 <option value="false">Inactive</option>
               </select>
             </div>
-            <div style={{ ...styles.formGroup, gridColumn: "1 / -1" }}>
+
+            <div className="form-full" style={styles.formGroup}>
               <label style={styles.formLabel}>Description</label>
               <textarea
-                style={{ ...styles.formInput, resize: "vertical", minHeight: 80 }}
+                className="form-input"
+                style={{ resize: "vertical", minHeight: 80 }}
                 placeholder="Brief description of the category..."
                 value={form.description}
                 onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
               />
             </div>
-            <div style={{ ...styles.formGroup, gridColumn: "1 / -1" }}>
+
+            <div className="form-full" style={styles.formGroup}>
               <label style={styles.formLabel}>
                 Thumbnail image {!editId && <span style={{ color: "#e24b4a" }}>*</span>}
               </label>
               <div
-                style={styles.uploadZone}
+                className="upload-zone"
                 onClick={() => fileRef.current?.click()}
               >
                 {uploadPreview ? (
@@ -362,12 +613,12 @@ export default function CategoryPage() {
                     <p style={{ fontSize: 13, color: "#0f6e56", fontWeight: 500 }}>
                       {uploadedFile ? uploadedFile.name : "Current thumbnail"}
                     </p>
-                    <span style={{ fontSize: 12, color: "#888" }}>Click to replace</span>
+                    <span style={{ fontSize: 12, color: "#888" }}>Tap to replace</span>
                   </div>
                 ) : (
                   <div style={{ textAlign: "center" }}>
                     <div style={{ fontSize: 36, marginBottom: 8 }}>☁</div>
-                    <p style={{ fontSize: 13, color: "#555" }}>Click to upload thumbnail</p>
+                    <p style={{ fontSize: 13, color: "#555" }}>Tap to upload thumbnail</p>
                     <span style={{ fontSize: 12, color: "#999", marginTop: 4, display: "block" }}>
                       PNG, JPG, WEBP up to 5MB
                     </span>
@@ -383,30 +634,27 @@ export default function CategoryPage() {
               />
             </div>
           </div>
-          <div style={styles.formActions}>
-            <button style={styles.btnGhost} onClick={resetForm}>
-              Clear form
-            </button>
+
+          <div style={{
+            display: "flex", gap: 10, justifyContent: "flex-end",
+            marginTop: "1.5rem", paddingTop: "1.25rem",
+            borderTop: "1px solid #eee", flexWrap: "wrap",
+          }}>
+            <button className="btn-ghost" onClick={resetForm}>Clear</button>
             <button
-              style={{ ...styles.btnPrimary, opacity: submitting ? 0.7 : 1 }}
+              className="btn-primary"
+              style={{ opacity: submitting ? 0.7 : 1, flex: 1, justifyContent: "center", maxWidth: 200 }}
               onClick={handleSubmit}
               disabled={submitting}
             >
-              {submitting ? "Saving..." : editId ? "✓ Update category" : "✓ Save category"}
+              {submitting ? "Saving..." : editId ? "✓ Update" : "✓ Save category"}
             </button>
           </div>
         </div>
       )}
 
       {/* Toast */}
-      <div
-        style={{
-          ...styles.toast,
-          ...(toast.type === "error" ? styles.toastError : {}),
-          transform: toast.show ? "translateY(0)" : "translateY(80px)",
-          opacity: toast.show ? 1 : 0,
-        }}
-      >
+      <div className={`toast${toast.type === "error" ? " error" : ""}${!toast.show ? " hidden" : ""}`}>
         {toast.type === "error" ? "✗" : "✓"} {toast.msg}
       </div>
     </div>
@@ -415,8 +663,12 @@ export default function CategoryPage() {
 
 function CategoryCard({ cat, onEdit, onDelete, onToggle }) {
   return (
-    <div style={styles.catCard}>
-      <div style={styles.catThumb}>
+    <div className="cat-card">
+      <div style={{
+        height: 100, background: "#f5f6fa",
+        display: "flex", alignItems: "center",
+        justifyContent: "center", position: "relative", overflow: "hidden",
+      }}>
         {cat.thumbnail ? (
           <img
             src={cat.thumbnail}
@@ -424,36 +676,49 @@ function CategoryCard({ cat, onEdit, onDelete, onToggle }) {
             style={{ width: "100%", height: "100%", objectFit: "cover" }}
           />
         ) : (
-          <span style={{ fontSize: 40 }}>📦</span>
+          <span style={{ fontSize: 36 }}>📦</span>
         )}
-        <span
-          style={{
-            ...styles.statusDot,
-            background: cat.isActive ? "#1a7a4a" : "#aaa",
-          }}
-        />
+        <span style={{
+          position: "absolute", top: 8, right: 8,
+          width: 8, height: 8, borderRadius: "50%",
+          background: cat.isActive ? "#1a7a4a" : "#aaa",
+          boxShadow: "0 0 0 2px #fff",
+        }} />
       </div>
-      <div style={styles.catBody}>
-        <div style={styles.catName}>{cat.name}</div>
-        <div style={styles.catDesc}>{cat.description || "No description"}</div>
-        <div style={styles.catFooter}>
-          <span style={cat.isActive ? styles.badgeGreen : styles.badgeGray}>
-            {cat.isActive ? "✓ Active" : "○ Inactive"}
+      <div style={{ padding: "10px 12px" }}>
+        <div style={{
+          fontSize: 14, fontWeight: 700, color: "#1a1a1a",
+          marginBottom: 3, whiteSpace: "nowrap",
+          overflow: "hidden", textOverflow: "ellipsis",
+        }}>
+          {cat.name}
+        </div>
+        <div style={{
+          fontSize: 11, color: "#888", lineHeight: 1.4,
+          marginBottom: 8, whiteSpace: "nowrap",
+          overflow: "hidden", textOverflow: "ellipsis",
+        }}>
+          {cat.description || "No description"}
+        </div>
+        <div style={{
+          display: "flex", alignItems: "center",
+          justifyContent: "space-between",
+          borderTop: "1px solid #f0f0f0", paddingTop: 8,
+        }}>
+          <span style={{
+            fontSize: 10, padding: "3px 8px", borderRadius: 20,
+            fontWeight: 600,
+            background: cat.isActive ? "#e1f5ee" : "#f0f0f0",
+            color: cat.isActive ? "#0f6e56" : "#666",
+          }}>
+            {cat.isActive ? "✓ Active" : "Inactive"}
           </span>
-          <div style={{ display: "flex", gap: 6 }}>
-            <button style={styles.iconBtn} onClick={onToggle} title="Toggle status">
+          <div style={{ display: "flex", gap: 5 }}>
+            <button className="icon-btn" onClick={onToggle} title="Toggle status">
               {cat.isActive ? "⏸" : "▶"}
             </button>
-            <button style={styles.iconBtn} onClick={onEdit} title="Edit">
-              ✎
-            </button>
-            <button
-              style={{ ...styles.iconBtn, ...styles.iconBtnDanger }}
-              onClick={onDelete}
-              title="Delete"
-            >
-              🗑
-            </button>
+            <button className="icon-btn" onClick={onEdit} title="Edit">✎</button>
+            <button className="icon-btn icon-btn-danger" onClick={onDelete} title="Delete">🗑</button>
           </div>
         </div>
       </div>
@@ -463,280 +728,27 @@ function CategoryCard({ cat, onEdit, onDelete, onToggle }) {
 
 const styles = {
   page: {
-    padding: "1.5rem",
+    padding: "1rem",
     maxWidth: 1100,
     margin: "0 auto",
     fontFamily: "system-ui, -apple-system, sans-serif",
     background: "#f5f6fa",
     minHeight: "100vh",
   },
-  topbar: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: "1.5rem",
-  },
-  pageTitle: { fontSize: 22, fontWeight: 600, color: "#1a1a1a", margin: 0 },
-  pageSub: { fontSize: 13, color: "#888", marginTop: 2 },
-  btnPrimary: {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: 6,
-    background: "#1a7a4a",
-    color: "#fff",
-    border: "none",
-    padding: "10px 20px",
-    borderRadius: 8,
-    fontSize: 14,
-    fontWeight: 500,
-    cursor: "pointer",
-  },
-  btnGhost: {
-    padding: "9px 16px",
-    border: "1px solid #ddd",
-    borderRadius: 8,
-    fontSize: 14,
-    cursor: "pointer",
-    background: "#fff",
-    color: "#555",
-    fontFamily: "inherit",
-  },
-  statsRow: {
-    display: "grid",
-    gridTemplateColumns: "repeat(3, 1fr)",
-    gap: 12,
-    marginBottom: "1.5rem",
-  },
-  statCard: {
-    background: "#fff",
-    border: "1px solid #eee",
-    borderRadius: 12,
-    padding: "1rem 1.25rem",
-  },
-  statLabel: { fontSize: 13, color: "#888", marginBottom: 6 },
-  statValue: { fontSize: 28, fontWeight: 600, color: "#1a1a1a" },
-  badgeGreen: {
-    display: "inline-block",
-    fontSize: 11,
-    padding: "3px 10px",
-    borderRadius: 20,
-    background: "#e1f5ee",
-    color: "#0f6e56",
-    fontWeight: 500,
-    marginTop: 4,
-  },
-  badgeGray: {
-    display: "inline-block",
-    fontSize: 11,
-    padding: "3px 10px",
-    borderRadius: 20,
-    background: "#f0f0f0",
-    color: "#666",
-    fontWeight: 500,
-    marginTop: 4,
-  },
-  tabs: {
-    display: "flex",
-    gap: 0,
-    marginBottom: "1.5rem",
-    background: "#fff",
-    border: "1px solid #eee",
-    borderRadius: 10,
-    padding: 4,
-    width: "fit-content",
-  },
-  tab: {
-    padding: "8px 22px",
-    borderRadius: 7,
-    fontSize: 14,
-    fontWeight: 500,
-    cursor: "pointer",
-    border: "none",
-    background: "transparent",
-    color: "#888",
-  },
-  tabActive: { background: "#1a7a4a", color: "#fff" },
   panel: {
     background: "#fff",
     border: "1px solid #eee",
     borderRadius: 14,
-    padding: "1.5rem",
-  },
-  panelTitle: {
-    fontSize: 16,
-    fontWeight: 600,
-    color: "#1a1a1a",
-    marginBottom: "1.25rem",
-    display: "flex",
-    alignItems: "center",
-    gap: 8,
-  },
-  searchRow: {
-    display: "flex",
-    alignItems: "center",
-    gap: 10,
-    marginBottom: "1.25rem",
-  },
-  searchIcon: {
-    position: "absolute",
-    left: 11,
-    top: "50%",
-    transform: "translateY(-50%)",
-    fontSize: 14,
-    color: "#aaa",
-  },
-  searchInput: {
-    width: "100%",
-    padding: "9px 12px 9px 36px",
-    border: "1px solid #ddd",
-    borderRadius: 8,
-    fontSize: 14,
-    outline: "none",
-    fontFamily: "inherit",
-  },
-  filterSelect: {
-    padding: "9px 12px",
-    border: "1px solid #ddd",
-    borderRadius: 8,
-    fontSize: 14,
-    background: "#fff",
-    cursor: "pointer",
-    fontFamily: "inherit",
-    minWidth: 130,
-  },
-  catGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-    gap: 14,
-  },
-  catCard: {
-    background: "#fff",
-    border: "1px solid #eee",
-    borderRadius: 12,
-    overflow: "hidden",
-    transition: "border-color 0.15s, transform 0.15s",
-  },
-  catThumb: {
-    height: 110,
-    background: "#f5f6fa",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    position: "relative",
-    overflow: "hidden",
-  },
-  statusDot: {
-    position: "absolute",
-    top: 10,
-    right: 10,
-    width: 9,
-    height: 9,
-    borderRadius: "50%",
-  },
-  catBody: { padding: "12px" },
-  catName: { fontSize: 15, fontWeight: 600, color: "#1a1a1a", marginBottom: 4 },
-  catDesc: {
-    fontSize: 12,
-    color: "#888",
-    lineHeight: 1.5,
-    marginBottom: 10,
-    whiteSpace: "nowrap",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-  },
-  catFooter: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    borderTop: "1px solid #eee",
-    paddingTop: 10,
-  },
-  iconBtn: {
-    width: 30,
-    height: 30,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    border: "1px solid #eee",
-    borderRadius: 7,
-    cursor: "pointer",
-    background: "#fff",
-    fontSize: 14,
-  },
-  iconBtnDanger: { color: "#a32d2d" },
-  emptyState: {
-    textAlign: "center",
-    padding: "3rem 1rem",
-    color: "#888",
+    padding: "1rem",
   },
   spinner: {
-    width: 36,
-    height: 36,
+    width: 36, height: 36,
     border: "3px solid #eee",
     borderTop: "3px solid #1a7a4a",
     borderRadius: "50%",
     animation: "spin 0.8s linear infinite",
     margin: "0 auto",
   },
-  formGrid: {
-    display: "grid",
-    gridTemplateColumns: "1fr 1fr",
-    gap: "1rem",
-  },
   formGroup: { display: "flex", flexDirection: "column", gap: 6 },
-  formLabel: { fontSize: 13, fontWeight: 500, color: "#555" },
-  formInput: {
-    padding: "9px 12px",
-    border: "1px solid #ddd",
-    borderRadius: 8,
-    fontSize: 14,
-    background: "#fff",
-    color: "#1a1a1a",
-    outline: "none",
-    fontFamily: "inherit",
-  },
-  formSelect: {
-    padding: "9px 12px",
-    border: "1px solid #ddd",
-    borderRadius: 8,
-    fontSize: 14,
-    background: "#fff",
-    color: "#1a1a1a",
-    outline: "none",
-    cursor: "pointer",
-    fontFamily: "inherit",
-  },
-  uploadZone: {
-    border: "2px dashed #ddd",
-    borderRadius: 8,
-    padding: "2rem",
-    textAlign: "center",
-    cursor: "pointer",
-    background: "#fafafa",
-    transition: "border-color 0.15s",
-  },
-  formActions: {
-    display: "flex",
-    gap: 10,
-    justifyContent: "flex-end",
-    marginTop: "1.5rem",
-    paddingTop: "1.25rem",
-    borderTop: "1px solid #eee",
-  },
-  toast: {
-    position: "fixed",
-    bottom: 24,
-    right: 24,
-    background: "#1a7a4a",
-    color: "#fff",
-    padding: "12px 20px",
-    borderRadius: 10,
-    fontSize: 14,
-    fontWeight: 500,
-    transition: "all 0.3s",
-    zIndex: 9999,
-    pointerEvents: "none",
-    boxShadow: "0 4px 16px rgba(0,0,0,0.15)",
-  },
-  toastError: { background: "#a32d2d" },
+  formLabel: { fontSize: 13, fontWeight: 600, color: "#555" },
 };

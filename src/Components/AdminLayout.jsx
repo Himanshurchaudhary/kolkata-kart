@@ -39,6 +39,7 @@ import CustomerOrders from '../Admin/Pages/Customerorders';
 import SellerManagement from './Admin/SellerManagement'; // NEW
 import SellerProductsApproval from './Admin/SellerProductsApproval'
 import AdminPincodeManager from "./Adminpincodemanager";
+import MobileAdminBottomBar from './MobileAdminBottomBar';
 
 const AdminLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -74,7 +75,7 @@ const AdminLayout = () => {
         </div>
 
         {/* Page Routes */}
-        <main className="flex-1 p-4 md:p-10 overflow-y-auto">
+        <main className="flex-1 p-4 md:p-10 pb-20 md:pb-10 overflow-y-auto">
           <Routes>
             <Route path="dash" element={<AdminLay />} />
             <Route path="productList" element={<ProductList />} />
@@ -115,6 +116,7 @@ const AdminLayout = () => {
 
           </Routes>
         </main>
+        <MobileAdminBottomBar />
       </div>
     </div>
   );

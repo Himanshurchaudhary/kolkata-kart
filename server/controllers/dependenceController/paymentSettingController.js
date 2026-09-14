@@ -6,7 +6,6 @@ const ALLOWED_GATEWAYS = ['Stripe', 'Razorpay'];
 
 exports.getAllGatewaySettings = async (req, res) => {
     try {
-        // find() with no filters returns all; filter by allowed gateways in JS
         const all      = await PaymentSetting.find();
         const settings = all.filter(s => ALLOWED_GATEWAYS.includes(s.gatewayName));
         res.status(200).json({ success: true, settings });
@@ -37,12 +36,12 @@ exports.addPaymentSettings = async (req, res) => {
         const logoUrl    = req.file ? req.file.path : null;
         const newSetting = await PaymentSetting.create({
             gatewayName,
-            status:       status === 'true' || status === true,
-            mode:         mode || 'Test',
+            status: status === 'true' || status === true ? 1 : 0,  // ✅ MySQL boolean
+            mode:   mode || 'Test',
             secretKey,
             publishedKey,
-            title:        title || gatewayName,
-            logo:         logoUrl,
+            title:  title || gatewayName,
+            logo:   logoUrl,
         });
 
         res.status(201).json({
@@ -67,7 +66,7 @@ exports.updatePaymentSettings = async (req, res) => {
         }
 
         const updateFields = {
-            status:       status === 'true' || status === true,
+            status:       status === 'true' || status === true ? 1 : 0,  // ✅ MySQL boolean
             mode,
             secretKey,
             publishedKey,
@@ -91,7 +90,6 @@ exports.toggleGatewayStatus = async (req, res) => {
     try {
         const { gatewayName } = req.params;
 
-        // toggleStatus handles NOT status in a single query — no extra round-trip
         const updated = await PaymentSetting.toggleStatus(gatewayName);
         if (!updated) {
             return res.status(404).json({ success: false, message: `${gatewayName} not found` });
@@ -109,8 +107,8 @@ exports.toggleGatewayStatus = async (req, res) => {
 
 exports.getActiveGateways = async (req, res) => {
     try {
-        // excludeFields mimics Mongoose's .select('-secretKey')
-        const gateways = await PaymentSetting.find({ status: true }, ['secretKey']);
+        // ✅ status = 1 (MySQL boolean fix)
+        const gateways = await PaymentSetting.find({ status: 1 }, ['secretKey']);
         res.status(200).json({ success: true, gateways });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
@@ -125,9 +123,15 @@ exports.processPayment = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Invalid Amount' });
         }
 
-        const config = await PaymentSetting.findOne({ gatewayName: 'Razorpay', status: true });
+        // ✅ status: 1 — MySQL boolean fix
+        const config = await PaymentSetting.findOne({ gatewayName: 'Razorpay', status: 1 });
         if (!config) {
             return res.status(400).json({ success: false, message: 'Razorpay is disabled or not configured.' });
+        }
+
+        // ✅ Keys present hain ki nahi check karo
+        if (!config.publishedKey || !config.secretKey) {
+            return res.status(400).json({ success: false, message: 'Razorpay keys missing in DB.' });
         }
 
         const instance = new Razorpay({
@@ -140,7 +144,7 @@ exports.processPayment = async (req, res) => {
             currency: 'INR',
             receipt:  `receipt_${orderId || Date.now()}`,
             notes: {
-                userId:  req.user?.id?.toString() || 'Guest',  // .id not ._id for MySQL
+                userId:  req.user?.id?.toString() || 'Guest',
                 orderId: orderId,
             }
         };
@@ -154,6 +158,7 @@ exports.processPayment = async (req, res) => {
             key_id:   config.publishedKey,
         });
     } catch (error) {
+        console.error('Razorpay processPayment error:', error); // ✅ Debug log
         res.status(500).json({ success: false, message: 'Payment could not be initiated', error: error.message });
     }
 };
@@ -162,12 +167,13 @@ exports.verifyPayment = async (req, res) => {
     try {
         const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
 
+        // ✅ status check hataya — verify ke liye sirf keys chahiye
         const config = await PaymentSetting.findOne({ gatewayName: 'Razorpay' });
         if (!config) {
             return res.status(400).json({ success: false, message: 'Gateway settings not found' });
         }
 
-        const sign        = `${razorpay_order_id}|${razorpay_payment_id}`;
+        const sign         = `${razorpay_order_id}|${razorpay_payment_id}`;
         const expectedSign = crypto
             .createHmac('sha256', config.secretKey)
             .update(sign)
