@@ -141,7 +141,6 @@ function RichEditor({ value, onChange }) {
 
     return (
         <div className="border border-gray-200 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-emerald-400 transition">
-            {/* Toolbar — scrollable on mobile */}
             <div className="flex items-center gap-1 px-2 py-2 bg-gray-50 border-b border-gray-100 overflow-x-auto no-scrollbar">
                 {[
                     { label: "B", cmd: "bold", className: "font-black" },
@@ -304,7 +303,6 @@ function VariantCard({ v, idx, total, onUpdate, onRemove, onSetDefault, onGenera
 
     return (
         <div className={`rounded-2xl border ${v.isDefault ? "border-emerald-300 bg-emerald-50/20" : "border-gray-200 bg-white"}`}>
-            {/* Variant header — tappable */}
             <div
                 className="flex items-center justify-between px-4 py-3 cursor-pointer"
                 onClick={() => setOpen((o) => !o)}
@@ -335,14 +333,11 @@ function VariantCard({ v, idx, total, onUpdate, onRemove, onSetDefault, onGenera
 
             {open && (
                 <div className="px-4 pb-4 space-y-3 border-t border-gray-100">
-                    {/* Label */}
                     <div className="pt-3">
                         <Label required>Variant Label</Label>
                         <Input value={v.label} onChange={(e) => onUpdate({ ...v, label: e.target.value })}
                             placeholder="e.g. 500ml, 1kg, Large" />
                     </div>
-
-                    {/* SKU */}
                     <div>
                         <div className="flex items-center justify-between mb-1.5">
                             <Label required>SKU</Label>
@@ -353,8 +348,6 @@ function VariantCard({ v, idx, total, onUpdate, onRemove, onSetDefault, onGenera
                         </div>
                         <Input value={v.sku} onChange={(e) => onUpdate({ ...v, sku: e.target.value })} placeholder="SKU" />
                     </div>
-
-                    {/* Prices — 2 col on mobile */}
                     <div className="grid grid-cols-2 gap-3">
                         <div>
                             <Label required>Old Price (MRP)</Label>
@@ -381,14 +374,12 @@ function VariantCard({ v, idx, total, onUpdate, onRemove, onSetDefault, onGenera
                                 placeholder="0" min="0" />
                         </div>
                     </div>
-
                     <div>
                         <Label>Min Order Qty</Label>
                         <Input type="number" value={v.minOrderQuantity}
                             onChange={(e) => onUpdate({ ...v, minOrderQuantity: e.target.value })}
                             placeholder="1" min="1" className="max-w-[120px]" />
                     </div>
-
                     {!v.isDefault && (
                         <button type="button" onClick={onSetDefault}
                             className="text-xs font-semibold text-emerald-600 hover:underline">
@@ -482,7 +473,7 @@ function VariantsSection({ variants, onChange }) {
     );
 }
 
-// ─── Category Picker — modal on mobile ───────────────────────
+// ─── Category Picker ─────────────────────────────────────────
 function CategoryPicker({ categories, selected, onChange, loading }) {
     const [open, setOpen] = useState(false);
 
@@ -496,7 +487,6 @@ function CategoryPicker({ categories, selected, onChange, loading }) {
 
     return (
         <>
-            {/* Trigger button */}
             <button
                 type="button"
                 onClick={() => setOpen(true)}
@@ -510,7 +500,6 @@ function CategoryPicker({ categories, selected, onChange, loading }) {
                 </svg>
             </button>
 
-            {/* Modal/Drawer */}
             {open && (
                 <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
                     <div className="absolute inset-0 bg-black/40" onClick={() => setOpen(false)} />
@@ -565,7 +554,6 @@ function resolveId(field) {
 export default function AddProductPage({ existingProduct = null, onSaved, onCancel }) {
     const isEditMode = Boolean(existingProduct);
 
-    // Form state
     const [name, setName] = useState("");
     const [slug, setSlug] = useState("");
     const [shortDesc, setShortDesc] = useState("");
@@ -601,7 +589,6 @@ export default function AddProductPage({ existingProduct = null, onSaved, onCanc
         setTimeout(() => setToast(null), 3500);
     }
 
-    // Pre-fill edit mode
     useEffect(() => {
         if (!existingProduct) return;
         const p = existingProduct;
@@ -622,14 +609,12 @@ export default function AddProductPage({ existingProduct = null, onSaved, onCanc
         }
     }, [existingProduct]);
 
-    // Auto-slug
     useEffect(() => {
         if (!isEditMode) {
             setSlug(name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""));
         }
     }, [name, isEditMode]);
 
-    // Auto-discount
     useEffect(() => {
         const b = parseFloat(buyingPrice), s = parseFloat(sellingPrice);
         setDiscountPrice(!isNaN(b) && !isNaN(s) && b > s ? (b - s).toFixed(2) : "");
@@ -733,7 +718,7 @@ export default function AddProductPage({ existingProduct = null, onSaved, onCanc
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 font-[Outfit,sans-serif] pb-24 sm:pb-8">
+        <div className="min-h-screen bg-gray-50 font-[Outfit,sans-serif] pb-36">
             <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
         @keyframes toastIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
@@ -764,18 +749,6 @@ export default function AddProductPage({ existingProduct = null, onSaved, onCanc
                                 </p>
                             )}
                         </div>
-                    </div>
-                    {/* Desktop buttons */}
-                    <div className="hidden sm:flex gap-2 flex-shrink-0">
-                        <button type="button" onClick={isEditMode && onCancel ? onCancel : handleReset}
-                            className="px-4 py-2 text-xs font-semibold text-gray-600 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
-                            {isEditMode ? "Cancel" : "Reset"}
-                        </button>
-                        <button type="button" onClick={handleSubmit} disabled={submitting}
-                            className="flex items-center gap-2 px-4 py-2 text-xs font-semibold bg-emerald-500 hover:bg-emerald-600 disabled:opacity-60 text-white rounded-xl transition-colors shadow-sm shadow-emerald-200">
-                            {submitting && <Spinner />}
-                            {submitting ? "Saving…" : isEditMode ? "Update" : "Save Product"}
-                        </button>
                     </div>
                 </div>
             </header>
@@ -860,7 +833,6 @@ export default function AddProductPage({ existingProduct = null, onSaved, onCanc
                             <CategoryPicker categories={categories} selected={selectedCategories}
                                 onChange={setSelectedCategories} loading={categoriesLoading} />
                         </div>
-                        {/* Category attributes */}
                         {selectedCategories.length > 0 && (
                             <div className="space-y-3 pt-2">
                                 <p className="text-xs font-semibold text-gray-500">
@@ -952,8 +924,6 @@ export default function AddProductPage({ existingProduct = null, onSaved, onCanc
                             multiple maxFiles={5}
                             onChange={setAdditionalImages}
                             existingUrls={existingAdditional} />
-
-                        {/* Video */}
                         <div className="grid grid-cols-2 gap-3">
                             <div>
                                 <Label>Video Source</Label>
@@ -1001,7 +971,7 @@ export default function AddProductPage({ existingProduct = null, onSaved, onCanc
                     </div>
                 </SectionCard>
 
-                {/* Product Summary Card */}
+                {/* Summary */}
                 <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl p-4 text-white shadow-md shadow-emerald-200">
                     <p className="text-xs font-bold uppercase tracking-wider opacity-80 mb-3">Summary</p>
                     <div className="grid grid-cols-2 gap-y-2 text-sm">
@@ -1024,29 +994,26 @@ export default function AddProductPage({ existingProduct = null, onSaved, onCanc
                         )}
                     </div>
                 </div>
-
-                {/* Desktop footer buttons */}
-                <div className="hidden sm:flex justify-end gap-3 pb-4">
-                    <button type="button" onClick={isEditMode && onCancel ? onCancel : handleReset}
-                        className="px-6 py-2.5 text-sm font-semibold text-gray-600 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
-                        {isEditMode ? "Cancel" : "Reset"}
-                    </button>
-                    <button type="button" onClick={handleSubmit} disabled={submitting}
-                        className="flex items-center gap-2 px-6 py-2.5 text-sm font-semibold bg-emerald-500 hover:bg-emerald-600 disabled:opacity-60 text-white rounded-xl transition-colors shadow-sm shadow-emerald-200">
-                        {submitting && <Spinner />}
-                        {submitting ? "Saving…" : isEditMode ? "Update Product" : "Save Product"}
-                    </button>
-                </div>
             </main>
 
-            {/* ── Mobile Bottom Bar ── */}
-            <div className="fixed bottom-0 left-0 right-0 sm:hidden bg-white border-t border-gray-100 px-4 py-3 flex gap-3 shadow-lg z-30">
-                <button type="button" onClick={isEditMode && onCancel ? onCancel : handleReset}
-                    className="flex-1 py-3 text-sm font-semibold text-gray-600 border border-gray-200 rounded-xl hover:bg-gray-50 active:bg-gray-100 transition-colors">
+            {/* ── Bottom Bar — mobile + desktop dono pe dikhega ── */}
+            <div
+                className="fixed bottom-0 left-0 right-0 flex bg-white border-t border-gray-100 px-4 py-3 gap-3 shadow-lg"
+                style={{ zIndex: 9999 }}
+            >
+                <button
+                    type="button"
+                    onClick={isEditMode && onCancel ? onCancel : handleReset}
+                    className="flex-1 py-3 text-sm font-semibold text-gray-600 border border-gray-200 rounded-xl hover:bg-gray-50 active:bg-gray-100 transition-colors"
+                >
                     {isEditMode ? "Cancel" : "Reset"}
                 </button>
-                <button type="button" onClick={handleSubmit} disabled={submitting}
-                    className="flex-2 flex items-center justify-center gap-2 px-8 py-3 text-sm font-bold bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 disabled:opacity-60 text-white rounded-xl transition-colors shadow-md shadow-emerald-200">
+                <button
+                    type="button"
+                    onClick={handleSubmit}
+                    disabled={submitting}
+                    className="flex-[2] flex items-center justify-center gap-2 py-3 text-sm font-bold bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 disabled:opacity-60 text-white rounded-xl transition-colors shadow-md shadow-emerald-200"
+                >
                     {submitting && <Spinner />}
                     {submitting ? "Saving…" : isEditMode ? "Update" : "Save Product"}
                 </button>
