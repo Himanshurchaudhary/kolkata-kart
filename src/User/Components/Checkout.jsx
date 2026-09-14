@@ -26,7 +26,7 @@ const api = {
   razorpayInit: (body) => fetch(`${API_URL}/api/payment/process`, { method: "POST", headers: authHdr(), body: JSON.stringify(body) }).then(r => r.json()),
   razorpayVerify: (body) => fetch(`${API_URL}/api/payment/verify`, { method: "POST", headers: authHdr(), body: JSON.stringify(body) }).then(r => r.json()),
   taxRate: () => fetch(`${API_URL}/api/taxes/active-rate`).then(r => r.json()),
-  deliveryRate: (qty) => fetch(`${API_URL}/api/delivery/charge-for-qty?qty=${qty}`).then(r => r.json()),
+  deliveryRate: (amount) => fetch(`${API_URL}/api/delivery/charge-for-amount?amount=${amount}`).then(r => r.json()),
   productList: () => fetch(`${API_URL}/api/Products/allFree?limit=500`).then(r => r.json()),
 };
 
@@ -502,22 +502,19 @@ export default function Checkout() {
         api.addresses(), api.gateways(), api.taxRate(),
       ]);
 
-      let resolvedQty = 1;
+      let initialSubtotal = 0; // ✅ upar declare karo
 
-      // ── Buy Now: fetch single product, skip cart ──────────────────────────
       if (isBuyNow) {
         try {
           const data = await api.productList();
           const list = Array.isArray(data) ? data : data.products || data.data || [];
           const found = list.find(p => p.id == buyNowProductId);
           if (found) {
-            // ✅ CHANGE 2: Variant dhundho aur synthetic item mein lagao
             let selectedVariant = null;
             if (buyNowVariantId && found.variants?.length > 0) {
               selectedVariant = found.variants.find(v => v.id == buyNowVariantId) || null;
             }
 
-            // Variant ki price use karo agar available hai
             const effectivePrice = selectedVariant
               ? Number(selectedVariant.sellingPrice ?? found.sellingPrice ?? 0)
               : Number(found.sellingPrice ?? 0);
@@ -526,10 +523,10 @@ export default function Checkout() {
               product: { ...found, sellingPrice: effectivePrice },
               quantity: buyNowQty,
               variantId: buyNowVariantId,
-              variant: selectedVariant,   // label/color display ke liye
+              variant: selectedVariant,
             };
             setCartItems([syntheticItem]);
-            resolvedQty = buyNowQty;
+            initialSubtotal = effectivePrice * buyNowQty; // ✅ assign karo
           } else {
             navigate("/user/product");
             return;
@@ -539,12 +536,14 @@ export default function Checkout() {
           return;
         }
       } else {
-        // ── Normal checkout: load cart ──────────────────────────────────────
         const cartRes = await api.cart().catch(() => null);
         const items = cartRes?.items || [];
         setCartItems(items);
         if (items.length === 0) { navigate("/user/product"); return; }
-        resolvedQty = items.reduce((s, i) => s + (i.quantity || 1), 0);
+        initialSubtotal = items.reduce((s, i) => { // ✅ assign karo
+          const p = i.product || i;
+          return s + Number(p.sellingPrice ?? p.price ?? 0) * (i.quantity || 1);
+        }, 0);
       }
 
       if (addrRes.status === "fulfilled") {
@@ -560,25 +559,28 @@ export default function Checkout() {
       }
 
       try {
-        const dRes = await api.deliveryRate(resolvedQty);
+        const dRes = await api.deliveryRate(initialSubtotal); // ✅ ab accessible hai
         if (dRes?.success) setShippingCharge(Number(dRes.charge ?? 0));
       } catch { }
 
     } finally { setLoading(false); }
   }, [navigate, isBuyNow, buyNowProductId, buyNowQty, buyNowVariantId]);
-
+  
   useEffect(() => { load(); }, [load]);
 
   // ── Re-fetch delivery charge when cart qty changes ─────────────────────────
   useEffect(() => {
-    if (isBuyNow || cartItems.length === 0) return;
-    const qty = cartItems.reduce((s, i) => s + (i.quantity || 1), 0);
-    setDeliveryLoading(true);
-    api.deliveryRate(qty)
-      .then(res => { if (res?.success) setShippingCharge(Number(res.charge ?? 0)); })
-      .catch(() => { })
-      .finally(() => setDeliveryLoading(false));
-  }, [cartItems, isBuyNow]);
+  if (isBuyNow || cartItems.length === 0) return;
+  const currentSubtotal = cartItems.reduce((s, i) => {
+    const p = i.product || i;
+    return s + Number(p.sellingPrice ?? p.price ?? 0) * (i.quantity || 1);
+  }, 0);
+  setDeliveryLoading(true);
+  api.deliveryRate(currentSubtotal)
+    .then(res => { if (res?.success) setShippingCharge(Number(res.charge ?? 0)); })
+    .catch(() => { })
+    .finally(() => setDeliveryLoading(false));
+}, [cartItems, isBuyNow]);
 
   // ── Derived pricing ────────────────────────────────────────────────────────
   const subtotal = cartItems.reduce((s, i) => {

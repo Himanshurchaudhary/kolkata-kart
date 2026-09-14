@@ -68,25 +68,32 @@ const Confirm = ({ msg, onConfirm, onCancel, loading }) => (
 
 // ── Form Card (Add / Edit inline) ──────────────────────────────────────────────
 const DeliveryForm = ({ initial, onSubmit, loading, onCancel }) => {
-  const [minOrderQty, setMin]    = useState(initial?.minOrderQty ?? "");
-  const [maxOrderQty, setMax]    = useState(initial?.maxOrderQty ?? "");
-  const [charge,      setCharge] = useState(initial?.charge      ?? "");
-  const [err,         setErr]    = useState("");
+  // ✅ UPDATED: minOrderQty → minOrderAmount, maxOrderQty → maxOrderAmount
+  const [minOrderAmount, setMin]    = useState(initial?.minOrderAmount ?? "");
+  const [maxOrderAmount, setMax]    = useState(initial?.maxOrderAmount ?? "");
+  const [charge,         setCharge] = useState(initial?.charge         ?? "");
+  const [err,            setErr]    = useState("");
 
   const handle = (e) => {
     e.preventDefault();
     setErr("");
-    if (Number(minOrderQty) >= Number(maxOrderQty)) {
-      setErr("Max. Order QTY must be greater than Min. Order QTY");
+    // ✅ UPDATED: validation bhi amount ke saath
+    if (Number(minOrderAmount) >= Number(maxOrderAmount)) {
+      setErr("Max. Order Amount must be greater than Min. Order Amount");
       return;
     }
-    onSubmit({ minOrderQty: Number(minOrderQty), maxOrderQty: Number(maxOrderQty), charge: Number(charge) });
+    // ✅ UPDATED: payload mein amount fields bhejo
+    onSubmit({
+      minOrderAmount: Number(minOrderAmount),
+      maxOrderAmount: Number(maxOrderAmount),
+      charge: Number(charge),
+    });
   };
 
   return (
     <div className="bg-white rounded-xl shadow p-6 mb-6">
       <h2 className="text-lg font-semibold text-slate-800 mb-5 flex items-center gap-2">
-        <span className="text-base">🖼</span>
+        <span className="text-base">🚚</span>
         {initial ? "Edit Delivery Charge" : "Add New Delivery Charge"}
       </h2>
 
@@ -96,33 +103,35 @@ const DeliveryForm = ({ initial, onSubmit, loading, onCancel }) => {
 
       <form onSubmit={handle}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
-          {/* Min QTY */}
+          {/* ✅ UPDATED: Min Order Amount */}
           <div>
             <label className="block text-sm font-medium text-slate-600 mb-1.5">
-              Minimum Order Quantity <span className="text-red-500">*</span>
+              Minimum Order Amount (₹) <span className="text-red-500">*</span>
             </label>
             <input
               required
               type="number"
               min={0}
-              placeholder="Enter Minimum Order Quantity"
-              value={minOrderQty}
+              step="0.01"
+              placeholder="Enter Minimum Order Amount"
+              value={minOrderAmount}
               onChange={(e) => setMin(e.target.value)}
               className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent transition"
             />
           </div>
 
-          {/* Max QTY */}
+          {/* ✅ UPDATED: Max Order Amount */}
           <div>
             <label className="block text-sm font-medium text-slate-600 mb-1.5">
-              Maximum Order Quantity <span className="text-red-500">*</span>
+              Maximum Order Amount (₹) <span className="text-red-500">*</span>
             </label>
             <input
               required
               type="number"
               min={0}
-              placeholder="Enter Maximum Order Quantity"
-              value={maxOrderQty}
+              step="0.01"
+              placeholder="Enter Maximum Order Amount"
+              value={maxOrderAmount}
               onChange={(e) => setMax(e.target.value)}
               className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent transition"
             />
@@ -132,7 +141,7 @@ const DeliveryForm = ({ initial, onSubmit, loading, onCancel }) => {
         {/* Charge */}
         <div className="mb-6 md:w-1/2">
           <label className="block text-sm font-medium text-slate-600 mb-1.5">
-            Delivery Charge <span className="text-red-500">*</span>
+            Delivery Charge (₹) <span className="text-red-500">*</span>
           </label>
           <input
             required
@@ -173,8 +182,8 @@ const DeliveryForm = ({ initial, onSubmit, loading, onCancel }) => {
 export default function DeliveryChargePage() {
   const [charges,       setCharges]       = useState([]);
   const [fetching,      setFetching]      = useState(true);
-  const [showForm,      setShowForm]      = useState(false);   // "add" form visibility
-  const [editRow,       setEditRow]       = useState(null);    // row being edited
+  const [showForm,      setShowForm]      = useState(false);
+  const [editRow,       setEditRow]       = useState(null);
   const [formLoading,   setFormLoading]   = useState(false);
   const [confirmDel,    setConfirmDel]    = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
@@ -188,7 +197,6 @@ export default function DeliveryChargePage() {
 
   const removeToast = (id) => setToasts((p) => p.filter((t) => t.id !== id));
 
-  // fetch
   const fetchCharges = useCallback(async () => {
     setFetching(true);
     try {
@@ -203,7 +211,6 @@ export default function DeliveryChargePage() {
 
   useEffect(() => { fetchCharges(); }, [fetchCharges]);
 
-  // add
   const handleAdd = async (payload) => {
     setFormLoading(true);
     try {
@@ -218,7 +225,6 @@ export default function DeliveryChargePage() {
     }
   };
 
-  // update
   const handleUpdate = async (payload) => {
     setFormLoading(true);
     try {
@@ -233,7 +239,6 @@ export default function DeliveryChargePage() {
     }
   };
 
-  // delete
   const handleDelete = async () => {
     setDeleteLoading(true);
     try {
@@ -258,14 +263,14 @@ export default function DeliveryChargePage() {
 
       {confirmDel && (
         <Confirm
-          msg={`Delete this delivery charge (Min: ${confirmDel.minOrderQty} / Max: ${confirmDel.maxOrderQty})? This cannot be undone.`}
+          // ✅ UPDATED: minOrderQty → minOrderAmount, maxOrderQty → maxOrderAmount
+          msg={`Delete this delivery charge (Min: ₹${confirmDel.minOrderAmount} / Max: ₹${confirmDel.maxOrderAmount})? This cannot be undone.`}
           onConfirm={handleDelete}
           onCancel={() => setConfirmDel(null)}
           loading={deleteLoading}
         />
       )}
 
-      {/* ── Add Form ── */}
       {showForm && (
         <DeliveryForm
           onSubmit={handleAdd}
@@ -274,7 +279,6 @@ export default function DeliveryChargePage() {
         />
       )}
 
-      {/* ── Edit Form ── */}
       {editRow && (
         <DeliveryForm
           initial={editRow}
@@ -286,7 +290,6 @@ export default function DeliveryChargePage() {
 
       {/* ── Table Card ── */}
       <div className="bg-white rounded-xl shadow overflow-hidden">
-        {/* header */}
         <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
           <h1 className="text-xl font-bold text-slate-800">Manage Delivery Charge</h1>
           {!showForm && !editRow && (
@@ -299,12 +302,12 @@ export default function DeliveryChargePage() {
           )}
         </div>
 
-        {/* table */}
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-gray-50">
               <tr>
-                {["SL", "Min. Order QTY", "Max. Order QTY", "Charge", "Action"].map((h) => (
+                {/* ✅ UPDATED: Table headers */}
+                {["SL", "Min. Order Amount", "Max. Order Amount", "Charge", "Action"].map((h) => (
                   <th
                     key={h}
                     className={`px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide border-b border-gray-100
@@ -332,12 +335,12 @@ export default function DeliveryChargePage() {
                 charges.map((row, i) => (
                   <tr key={row.id} className="border-b border-gray-50 hover:bg-gray-50 transition">
                     <td className="px-6 py-4 text-slate-600">{i + 1}.</td>
-                    <td className="px-6 py-4 text-slate-700 font-medium text-center">{row.minOrderQty}</td>
-                    <td className="px-6 py-4 text-slate-700 font-medium text-center">{row.maxOrderQty}</td>
-                    <td className="px-6 py-4 text-slate-700 font-medium text-center">${row.charge}</td>
+                    {/* ✅ UPDATED: row fields + ₹ symbol */}
+                    <td className="px-6 py-4 text-slate-700 font-medium text-center">₹{row.minOrderAmount}</td>
+                    <td className="px-6 py-4 text-slate-700 font-medium text-center">₹{row.maxOrderAmount}</td>
+                    <td className="px-6 py-4 text-slate-700 font-medium text-center">₹{row.charge}</td>
                     <td className="px-6 py-4 text-center">
                       <div className="flex items-center justify-center gap-3">
-                        {/* Edit */}
                         <button
                           onClick={() => { setEditRow(row); setShowForm(false); }}
                           title="Edit"
@@ -348,7 +351,6 @@ export default function DeliveryChargePage() {
                             <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
                           </svg>
                         </button>
-                        {/* Delete */}
                         <button
                           onClick={() => setConfirmDel(row)}
                           title="Delete"

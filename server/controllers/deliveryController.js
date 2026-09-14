@@ -3,19 +3,26 @@ const DeliveryCharge = require('../models/DeliveryCharge');
 // @desc Add New Delivery Charge
 exports.addDeliveryCharge = async (req, res) => {
     try {
-        const { minOrderQty, maxOrderQty, charge } = req.body;
+        const { minOrderAmount, maxOrderAmount, charge } = req.body;
 
-        if (Number(minOrderQty) >= Number(maxOrderQty)) {
+        if (!minOrderAmount || !maxOrderAmount || !charge) {
             return res.status(400).json({
                 success: false,
-                message: 'Maximum order quantity must be greater than minimum order quantity'
+                message: 'All fields are required'
+            });
+        }
+
+        if (Number(minOrderAmount) >= Number(maxOrderAmount)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Maximum order amount must be greater than minimum order amount'
             });
         }
 
         const newCharge = await DeliveryCharge.create({
-            minOrderQty: Number(minOrderQty),
-            maxOrderQty: Number(maxOrderQty),
-            charge:      Number(charge)
+            minOrderAmount: Number(minOrderAmount),
+            maxOrderAmount: Number(maxOrderAmount),
+            charge:         Number(charge)
         });
 
         res.status(201).json({
@@ -38,30 +45,43 @@ exports.getAllCharges = async (req, res) => {
     }
 };
 
+// @desc Get Single Delivery Charge by ID
+exports.getDeliveryChargeById = async (req, res) => {
+    try {
+        const charge = await DeliveryCharge.findById(req.params.id);
+        if (!charge) {
+            return res.status(404).json({ success: false, message: 'Delivery charge not found' });
+        }
+        res.status(200).json({ success: true, data: charge });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+};
+
 // @desc Update Delivery Charge
 exports.updateDeliveryCharge = async (req, res) => {
     try {
-        const { minOrderQty, maxOrderQty, charge } = req.body;
+        const { minOrderAmount, maxOrderAmount, charge } = req.body;
 
         const existing = await DeliveryCharge.findById(req.params.id);
         if (!existing) {
             return res.status(404).json({ success: false, message: 'Delivery charge not found' });
         }
 
-        const newMin = minOrderQty !== undefined ? Number(minOrderQty) : existing.minOrderQty;
-        const newMax = maxOrderQty !== undefined ? Number(maxOrderQty) : existing.maxOrderQty;
+        const newMin = minOrderAmount !== undefined ? Number(minOrderAmount) : existing.minOrderAmount;
+        const newMax = maxOrderAmount !== undefined ? Number(maxOrderAmount) : existing.maxOrderAmount;
 
         if (newMin >= newMax) {
             return res.status(400).json({
                 success: false,
-                message: 'Maximum order quantity must be greater than minimum order quantity'
+                message: 'Maximum order amount must be greater than minimum order amount'
             });
         }
 
         const updateData = {};
-        if (minOrderQty !== undefined) updateData.minOrderQty = Number(minOrderQty);
-        if (maxOrderQty !== undefined) updateData.maxOrderQty = Number(maxOrderQty);
-        if (charge      !== undefined) updateData.charge      = Number(charge);
+        if (minOrderAmount !== undefined) updateData.minOrderAmount = Number(minOrderAmount);
+        if (maxOrderAmount !== undefined) updateData.maxOrderAmount = Number(maxOrderAmount);
+        if (charge         !== undefined) updateData.charge         = Number(charge);
 
         const updated = await DeliveryCharge.findByIdAndUpdate(req.params.id, updateData);
 
@@ -88,13 +108,24 @@ exports.deleteDeliveryCharge = async (req, res) => {
     }
 };
 
-// @desc Get Charge For a Specific Quantity
-exports.getChargeForQty = async (req, res) => {
+// @desc Get Charge For a Specific Order Amount
+exports.getChargeForAmount = async (req, res) => {
     try {
-        const qty    = Number(req.query.qty) || 1;
-        const result = await DeliveryCharge.findForQty(qty);
+        const amount = Number(req.query.amount) || 0;
 
-        res.json({ success: true, charge: result?.charge ?? 0 });
+        if (amount < 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'Amount must be a positive number'
+            });
+        }
+
+        const result = await DeliveryCharge.findForAmount(amount);
+
+        res.json({
+            success: true,
+            charge: result?.charge ?? 0
+        });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });
     }
