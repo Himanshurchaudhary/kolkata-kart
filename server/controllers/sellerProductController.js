@@ -1,23 +1,9 @@
-// controllers/sellerProductController.js
-
-const { pool }     = require("../config/db");
-const cloudinary   = require("cloudinary").v2;
+const { pool } = require("../config/db");
 require("dotenv").config();
-
-// ── Upload helper ──────────────────────────────────────────────
-const uploadToCloudinary = (buffer, folder) =>
-  new Promise((resolve, reject) => {
-    const stream = cloudinary.uploader.upload_stream(
-      { folder, resource_type: "image" },
-      (err, result) => (err ? reject(err) : resolve(result.secure_url))
-    );
-    stream.end(buffer);
-  });
 
 // ══════════════════════════════════════════════════════════════
 // 1. ADD PRODUCT  (seller)
 // POST /api/seller/products/add
-// multipart/form-data
 // ══════════════════════════════════════════════════════════════
 const addSellerProduct = async (req, res) => {
   try {
@@ -29,49 +15,35 @@ const addSellerProduct = async (req, res) => {
       unit, sku,
     } = req.body;
 
-    // Required field check
+    // ── Required field check ──────────────────────────────────
     const missing = [];
-    if (!name)             missing.push("name");
-    if (!category)         missing.push("category");
-    if (!sellingPrice)     missing.push("sellingPrice");
-    if (!stockQuantity)    missing.push("stockQuantity");
-    if (!unit)             missing.push("unit");
+    if (!name)          missing.push("name");
+    if (!category)      missing.push("category");
+    if (!sellingPrice)  missing.push("sellingPrice");
+    if (!stockQuantity) missing.push("stockQuantity");
+    if (!unit)          missing.push("unit");
     if (missing.length) {
       return res.status(400).json({ message: `Missing fields: ${missing.join(", ")}` });
     }
 
-    // Thumbnail required
+    // ── Thumbnail required ────────────────────────────────────
     if (!req.files?.thumbnail?.[0]) {
       return res.status(400).json({ message: "Product thumbnail is required" });
     }
 
-    // Upload thumbnail
-    const thumbnailUrl = await uploadToCloudinary(
-      req.files.thumbnail[0].buffer,
-      "gramin_cart/seller_products/thumbnails"
-    );
+    // ── URLs from middleware (file.path = Cloudinary URL) ─────
+    const thumbnailUrl   = req.files.thumbnail[0].path;
+    const additionalUrls = req.files?.additionalImages?.length
+      ? req.files.additionalImages.map(f => f.path)
+      : [];
 
-    // Upload additional images (optional)
-    let additionalUrls = [];
-    if (req.files?.additionalImages?.length) {
-      additionalUrls = await Promise.all(
-        req.files.additionalImages.map(f =>
-          uploadToCloudinary(f.buffer, "gramin_cart/seller_products/gallery")
-        )
-      );
-    }
-
-    // Auto-generate SKU if not provided
-    const finalSku = sku?.trim() ||
-      `GK-${req.sellerId}-${Date.now()}`;
-
-    // Auto-slug from name
-    const slug = name.toLowerCase()
+    // ── Auto SKU & slug ───────────────────────────────────────
+    const finalSku = sku?.trim() || `GK-${req.sellerId}-${Date.now()}`;
+    const slug     = name.toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
-      .replace(/(^-|-$)/g, "") +
-      "-" + Date.now();
+      .replace(/(^-|-$)/g, "") + "-" + Date.now();
 
-    // Insert product
+    // ── DB insert ─────────────────────────────────────────────
     const [result] = await pool.execute(
       `INSERT INTO products (
         name, slug, shortDescription, description,
@@ -101,7 +73,7 @@ const addSellerProduct = async (req, res) => {
 
     const productId = result.insertId;
 
-    // Insert additional images
+    // ── Additional images ─────────────────────────────────────
     if (additionalUrls.length) {
       const rows = additionalUrls.map(url => [productId, url]);
       await pool.query(
@@ -114,6 +86,7 @@ const addSellerProduct = async (req, res) => {
       message: "Product submitted for admin approval",
       productId,
     });
+
   } catch (err) {
     console.error("addSellerProduct error:", err);
     return res.status(500).json({ message: "Failed to add product. Try again." });
@@ -159,7 +132,6 @@ const getMyProductById = async (req, res) => {
     if (!rows.length) {
       return res.status(404).json({ message: "Product not found" });
     }
-    // Attach images
     const [images] = await pool.execute(
       "SELECT imageUrl FROM product_images WHERE product_id = ?",
       [req.params.id]
@@ -177,14 +149,13 @@ const getMyProductById = async (req, res) => {
 // ══════════════════════════════════════════════════════════════
 
 // 4. GET ALL SELLER PRODUCTS  (admin)
-// GET /api/admin/seller-products
 const adminGetSellerProducts = async (req, res) => {
   try {
-    const { status } = req.query; // pending | approved | rejected | (all)
+    const { status } = req.query;
     let query = `
       SELECT p.id, p.name, p.thumbnail, p.sellingPrice, p.buyingPrice,
              p.stockQuantity, p.status, p.createdAt,
-             c.name  AS category_name,
+             c.name      AS category_name,
              s.full_name AS seller_name,
              s.shop_name, s.email AS seller_email
       FROM products p
@@ -208,8 +179,6 @@ const adminGetSellerProducts = async (req, res) => {
 };
 
 // 5. APPROVE / REJECT / UPDATE STATUS  (admin)
-// PUT /api/admin/seller-products/:id/status
-// Body: { status: "approved" | "rejected" | "pending" }
 const adminUpdateProductStatus = async (req, res) => {
   try {
     const { status } = req.body;
@@ -217,7 +186,6 @@ const adminUpdateProductStatus = async (req, res) => {
     if (!validStatuses.includes(status)) {
       return res.status(400).json({ message: "Invalid status value" });
     }
-
     const [result] = await pool.execute(
       "UPDATE products SET status = ? WHERE id = ? AND seller_id IS NOT NULL",
       [status, req.params.id]
@@ -233,7 +201,6 @@ const adminUpdateProductStatus = async (req, res) => {
 };
 
 // 6. ADMIN GET SINGLE SELLER PRODUCT DETAIL
-// GET /api/admin/seller-products/:id
 const adminGetSellerProductById = async (req, res) => {
   try {
     const [rows] = await pool.execute(
