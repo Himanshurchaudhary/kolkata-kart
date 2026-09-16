@@ -166,6 +166,19 @@ const {
 const { getSellerWallet } = require("../controllers/sellerWalletController");
 
 // ── Multer error handler ───────────────────────────────────────────
+const upload1 = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 2 * 1024 * 1024 }, // 2 MB
+  fileFilter: (_req, file, cb) => {
+    if (file.mimetype.startsWith("image/")) {
+      cb(null, true);
+    } else {
+      cb(new Error("Only image files are allowed"), false);
+    }
+  },
+});
+
+
 const handleMulterError = (err, _req, res, next) => {
   if (err instanceof multer.MulterError) {
     if (err.code === "LIMIT_FILE_SIZE") {
@@ -191,6 +204,7 @@ const loginLimiter = rateLimit({
   standardHeaders: true, legacyHeaders: false,
   message: { message: "Too many login attempts. Please try again after 15 minutes." },
 });
+
 
 // ── JWT Auth Middleware ────────────────────────────────────────────
 const authSeller = (req, res, next) => {
@@ -218,12 +232,8 @@ const authSeller = (req, res, next) => {
 router.post("/send-otp",   otpLimiter,  sendOtp);
 router.post("/verify-otp",              verifyOtp);
 
-router.post(
-  "/register",
-  upload.single("panCardImage"),
-  handleMulterError,
-  registerSeller
-);
+router.post("/register",    upload1.single("panCardImage"), handleMulterError,  registerSeller);
+
 
 router.post("/login", loginLimiter, loginSeller);
 
@@ -236,12 +246,7 @@ router.get("/profile", authSeller, getProfile);
 router.put("/profile", authSeller, updateProfile);
 
 // ── Profile Pic ───────────────────────────────────────────────────
-router.post(
-  "/profile/pic",
-  authSeller,
-  ...compressAndUpload("profilePic", "ReadyGrocery/Sellers/ProfilePics"),
-  updateProfilePic
-);
+router.post("/profile/pic", authSeller, upload1.single("profilePic"), handleMulterError, updateProfilePic);
 
 // ── Orders & Wallet ───────────────────────────────────────────────
 router.get("/orders", authSeller, getSellerOrders);
