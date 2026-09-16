@@ -25,6 +25,8 @@ const {
 } = require("../controllers/sellerProductController");
 
 const { getSellerWallet } = require("../controllers/sellerWalletController");
+const { compressAndUpload, compressAndUploadFields } = require("../config/cloudinary");
+
 
 
 
@@ -128,16 +130,31 @@ router.get("/wallet", authSeller, getSellerWallet);
 
 
 // ── Products ─────────────────────────────────────────────────────
+// router.post(
+//   "/products/add",
+//   authSeller,
+//   upload.fields([
+//     { name: "thumbnail",        maxCount: 1 },
+//     { name: "additionalImages", maxCount: 4 },
+//   ]),
+//   handleMulterError,
+//   addSellerProduct
+// );
+
 router.post(
   "/products/add",
   authSeller,
-  upload.fields([
-    { name: "thumbnail",        maxCount: 1 },
-    { name: "additionalImages", maxCount: 4 },
-  ]),
-  handleMulterError,
+  ...compressAndUploadFields(
+    [
+      { name: "thumbnail",        maxCount: 1 },
+      { name: "additionalImages", maxCount: 4 },
+    ],
+    "ReadyGrocery/Products"
+  ),
   addSellerProduct
 );
+
+
 router.get("/products",     authSeller, getMyProducts);
 router.get("/products/:id", authSeller, getMyProductById);
 
