@@ -55,26 +55,10 @@ updatedAt        TIMESTAMP    DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMEST
     `);
 
     // ── Serviceable Pincodes ──────────────────────────────────────────────
-    await pool.query(`
-        CREATE TABLE IF NOT EXISTS serviceable_pincodes (
-            id        INT AUTO_INCREMENT PRIMARY KEY,
-            pincode   VARCHAR(20)  NOT NULL UNIQUE,
-            city      VARCHAR(100) DEFAULT '',
-            state     VARCHAR(100) DEFAULT '',
-            isActive  BOOLEAN      DEFAULT true,
-            createdAt TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
-        )
-    `);
+    
 
     // Seed: starting pincodes — apne area ke pincodes yahan add karo
-    await pool.query(`
-        INSERT IGNORE INTO serviceable_pincodes (pincode, city, state) VALUES
-            ('800001', 'Patna', 'Bihar'),
-            ('800002', 'Patna', 'Bihar'),
-            ('800003', 'Patna', 'Bihar'),
-            ('800004', 'Patna', 'Bihar'),
-            ('800005', 'Patna', 'Bihar')
-    `);
+   
 };
 
 createUserTables();
@@ -273,15 +257,8 @@ const User = {
 
     // ── Pincode serviceability check ──────────────────────────────────────
     checkPincode: async (pincode) => {
-        const [rows] = await pool.query(
-            `SELECT pincode, city, state
-             FROM serviceable_pincodes
-             WHERE pincode = ? AND isActive = true
-             LIMIT 1`,
-            [pincode.trim()]
-        );
-        return rows[0] ?? null; // null = deliver nahi hoga
-    },
+    return { pincode: pincode.trim(), city: "", state: "" };
+},
 
     // ── Pagination (used by notificationController) ───────────────────────
     findWithPagination: async (filters = {}, { page = 1, limit = 50 } = {}) => {
