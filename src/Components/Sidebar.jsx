@@ -67,6 +67,8 @@ const Sidebar = ({ sidebarOpen = true, onDesktopToggle, mobileOpen, onMobileClos
         />
         <NavItem to="/admin/category" icon={<Layers size={20} />} label="Categories" active={isActive('/admin/category')} onClick={onMobileClose} />
         <NavItem to="/admin/brandpage" icon={<Tag size={20} />} label="Brands" active={isActive('/admin/brandpage')} onClick={onMobileClose} />
+        <NavItem to="/admin/combolist" icon={<Tag size={20} />} label="Combo List" active={isActive('/admin/combolist')} onClick={onMobileClose} />
+
 
         {/* APPEARANCE */}
         <SectionHeader title="APPEARANCE" />

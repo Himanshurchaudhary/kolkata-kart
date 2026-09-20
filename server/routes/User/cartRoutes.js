@@ -17,14 +17,28 @@ router.get('/', protectUser, async (req, res) => {
 // POST /api/cart/add
 router.post('/add', protectUser, async (req, res) => {
     try {
-        const { productId, quantity = 1, variantId = null } = req.body;
-        if (!productId) return res.status(400).json({ message: 'productId is required.' });
+        const { productId, comboId, quantity = 1, variantId = null } = req.body;
 
-        const cart = await Cart.addOrIncrement(req.user.id, productId, quantity, variantId);
+        if (!productId && !comboId) {
+            return res.status(400).json({ message: 'productId or comboId is required.' });
+        }
+        if (productId && comboId) {
+            return res.status(400).json({ message: 'Send either productId or comboId, not both.' });
+        }
+
+        const qty = Number(quantity);
+        if (!Number.isInteger(qty) || qty < 1) {
+            return res.status(400).json({ message: 'quantity must be a positive integer.' });
+        }
+
+        const cart = comboId
+            ? await Cart.addOrIncrementCombo(req.user.id, Number(comboId), qty)
+            : await Cart.addOrIncrement(req.user.id, productId, qty, variantId);
+
         res.json(cart);
     } catch (err) {
         console.error('POST /api/cart/add error:', err);
-        res.status(500).json({ message: err.message });
+        res.status(err.status || 500).json({ message: err.message });
     }
 });
 

@@ -14,6 +14,8 @@ import SellerDashboard from './Sellar/sellardashboard';
 import UserLoginPage from './User/Pages/UserLogin';
 import UserLayout from './User/UserLayout';
 import HomePage from './User/Pages/HomePage';
+import ComboDetails from "./User/Pages/Combodetails";
+
 
 // User Shell — visible on all user-side pages
 import UserNavbar from './User/Components/Usernavbar';
@@ -351,6 +353,7 @@ function App() {
         <Route path="/user/deleteaccount" element={<DeleteAccount />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/combos/:id" element={<ComboDetails />} />
 
 
 

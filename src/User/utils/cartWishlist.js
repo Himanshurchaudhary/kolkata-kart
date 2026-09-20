@@ -5,6 +5,14 @@ const headers  = () => ({
   "Authorization": `Bearer ${getToken()}`,
 });
 
+// Response parse karo, aur non-2xx par backend ka { message } error ke roop mein throw karo.
+// Isse stock/validation errors caller ke catch block mein pahunchte hain.
+const parse = async (res) => {
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.message || "Request failed");
+  return data;
+};
+
 // ─── CART ──────────────────────────────────────────────────────
 export const fetchCart = async () => {
   const res = await fetch(`${API_URL}/api/cart`, { headers: headers() });
@@ -17,7 +25,20 @@ export const addToCart = async (productId, quantity = 1, variantId = null) => {
     headers: headers(),
     body:    JSON.stringify({ productId, quantity, variantId }),
   });
-  const data = await res.json();
+  const data = await parse(res);
+  window.dispatchEvent(new CustomEvent("cart-updated", { detail: data }));
+  return data;
+};
+
+// ✅ Combo ko ek single cart row ke roop mein add karta hai (comboId bhejo, poora combo object nahi).
+// Price backend DB se padhta hai, isliye comboPrice frontend se nahi jaata.
+export const addComboToCart = async (comboId, quantity = 1) => {
+  const res = await fetch(`${API_URL}/api/cart/add`, {
+    method:  "POST",
+    headers: headers(),
+    body:    JSON.stringify({ comboId, quantity }),
+  });
+  const data = await parse(res);
   window.dispatchEvent(new CustomEvent("cart-updated", { detail: data }));
   return data;
 };
@@ -29,7 +50,7 @@ export const updateCartItem = async (cartItemId, quantity) => {
     headers: headers(),
     body:    JSON.stringify({ quantity }),
   });
-  const data = await res.json();
+  const data = await parse(res);
   window.dispatchEvent(new CustomEvent("cart-updated", { detail: data }));
   return data;
 };
@@ -40,7 +61,7 @@ export const removeFromCart = async (cartItemId) => {
     method:  "DELETE",
     headers: headers(),
   });
-  const data = await res.json();
+  const data = await parse(res);
   window.dispatchEvent(new CustomEvent("cart-updated", { detail: data }));
   return data;
 };
@@ -50,7 +71,7 @@ export const clearCart = async () => {
   window.dispatchEvent(new CustomEvent("cart-updated", { detail: { items: [] } }));
 };
 
-// ─── WISHLIST ──────────────────────────────────────────────────
+// ─── WISHLIST (products) ───────────────────────────────────────
 export const fetchWishlist = async () => {
   const res = await fetch(`${API_URL}/api/wishlist`, { headers: headers() });
   return res.json();
@@ -81,3 +102,35 @@ export const toggleWishlist = async (productId, isCurrentlyWished) => {
   if (isCurrentlyWished) return removeFromWishlist(productId);
   return addToWishlist(productId);
 };
+
+// ─── COMBO WISHLIST ────────────────────────────────────────────
+// Combo ek single item ke roop mein save hota hai (uske products alag nahi).
+// Jaanbujhkar "wishlist-updated" event nahi bheja, kyunki wo product list ke liye hai.
+export const fetchComboWishlist = async () => {
+  const res = await fetch(`${API_URL}/api/combo-wishlist`, { headers: headers() });
+  return parse(res);
+};
+
+export const addComboToWishlist = async (comboId) => {
+  const res = await fetch(`${API_URL}/api/combo-wishlist/add`, {
+    method:  "POST",
+    headers: headers(),
+    body:    JSON.stringify({ comboId }),
+  });
+  const data = await parse(res);
+  window.dispatchEvent(new CustomEvent("combo-wishlist-updated", { detail: { action: "add" } }));
+  return data;
+};
+
+export const removeComboFromWishlist = async (comboId) => {
+  const res = await fetch(`${API_URL}/api/combo-wishlist/remove/${comboId}`, {
+    method:  "DELETE",
+    headers: headers(),
+  });
+  const data = await parse(res);
+  window.dispatchEvent(new CustomEvent("combo-wishlist-updated", { detail: { action: "remove" } }));
+  return data;
+};
+
+export const toggleComboWishlist = (comboId, isCurrentlyWished) =>
+  isCurrentlyWished ? removeComboFromWishlist(comboId) : addComboToWishlist(comboId);

@@ -448,8 +448,9 @@ export default function Checkout() {
   const buyNowQty = parseInt(searchParams.get("qty") || "1", 10);
   // ✅ CHANGE 1: variantId URL se padho
   const buyNowVariantId = searchParams.get("variantId") || null;
-  const isBuyNow = !!buyNowProductId;
-
+  const checkoutType = searchParams.get("type");
+  const isComboCheckout = checkoutType === "combo";
+  const isBuyNow = !!buyNowProductId && !isComboCheckout;
   const [cartItems, setCartItems] = useState([]);
   const [addresses, setAddresses] = useState([]);
   const [gateways, setGateways] = useState([]);
@@ -484,6 +485,8 @@ export default function Checkout() {
       let redirectPath = `checkout?buyNow=${buyNow}&qty=${qty || 1}`;
       if (variantId) redirectPath += `&variantId=${variantId}`;
       sessionStorage.setItem("checkoutReturnUrl", redirectPath);
+    } else if (params.get("type") === "combo") {
+      sessionStorage.setItem("checkoutReturnUrl", "checkout?type=combo");
     } else {
       sessionStorage.setItem("checkoutReturnUrl", "checkout");
     }
@@ -503,8 +506,34 @@ export default function Checkout() {
       ]);
 
       let initialSubtotal = 0; // ✅ upar declare karo
+      if (isComboCheckout) {
+        const raw = sessionStorage.getItem("buyNowCombo");
+        if (!raw) { navigate("/"); return; }
 
-      if (isBuyNow) {
+        const combo = JSON.parse(raw);
+        const comboQty = Number(combo.qty || 1);
+        const comboPrice = Number(combo.comboPrice);
+
+        const syntheticItem = {
+          id: `combo-${combo.id}`,
+          isCombo: true,
+          comboId: combo.id,
+          product: {
+            id: combo.id,
+            name: combo.name,
+            thumbnail: combo.thumbnail,
+            sellingPrice: comboPrice,
+            buyingPrice: Number(combo.totalMrp || 0),
+          },
+          quantity: comboQty,
+          comboProducts: combo.products || [],
+        };
+
+        setCartItems([syntheticItem]);
+        initialSubtotal = comboPrice * comboQty;
+
+      } else if (isBuyNow) {
+
         try {
           const data = await api.productList();
           const list = Array.isArray(data) ? data : data.products || data.data || [];
@@ -564,23 +593,23 @@ export default function Checkout() {
       } catch { }
 
     } finally { setLoading(false); }
-  }, [navigate, isBuyNow, buyNowProductId, buyNowQty, buyNowVariantId]);
-  
+  }, [navigate, isComboCheckout, isBuyNow, buyNowProductId, buyNowQty, buyNowVariantId]);
+
   useEffect(() => { load(); }, [load]);
 
   // ── Re-fetch delivery charge when cart qty changes ─────────────────────────
   useEffect(() => {
-  if (isBuyNow || cartItems.length === 0) return;
-  const currentSubtotal = cartItems.reduce((s, i) => {
-    const p = i.product || i;
-    return s + Number(p.sellingPrice ?? p.price ?? 0) * (i.quantity || 1);
-  }, 0);
-  setDeliveryLoading(true);
-  api.deliveryRate(currentSubtotal)
-    .then(res => { if (res?.success) setShippingCharge(Number(res.charge ?? 0)); })
-    .catch(() => { })
-    .finally(() => setDeliveryLoading(false));
-}, [cartItems, isBuyNow]);
+    if (isBuyNow || cartItems.length === 0) return;
+    const currentSubtotal = cartItems.reduce((s, i) => {
+      const p = i.product || i;
+      return s + Number(p.sellingPrice ?? p.price ?? 0) * (i.quantity || 1);
+    }, 0);
+    setDeliveryLoading(true);
+    api.deliveryRate(currentSubtotal)
+      .then(res => { if (res?.success) setShippingCharge(Number(res.charge ?? 0)); })
+      .catch(() => { })
+      .finally(() => setDeliveryLoading(false));
+  }, [cartItems, isBuyNow]);
 
   // ── Derived pricing ────────────────────────────────────────────────────────
   const subtotal = cartItems.reduce((s, i) => {
@@ -618,14 +647,20 @@ export default function Checkout() {
     setError(""); setPlacing(true);
 
     // ✅ CHANGE 3: variantId bhi order payload mein bhejo
-    const buyNowPayload = isBuyNow
-      ? {
-        buyNow: true,
-        productId: buyNowProductId,
-        quantity: buyNowQty,
-        variantId: buyNowVariantId ?? undefined,   // ← NEW
-      }
-      : {};
+    const buyNowPayload = isBuyNow ? {
+      buyNow: true,
+      productId: buyNowProductId,
+      quantity: buyNowQty,
+      variantId: buyNowVariantId ?? undefined,
+    } : {};
+
+    const isComboOrder = isComboCheckout && cartItems[0]?.isCombo === true;
+    const comboPayload = isComboOrder ? {
+      isCombo: true,
+      comboId: cartItems[0].comboId,
+      quantity: cartItems[0].quantity,
+      // comboPrice: Number(cartItems[0].product.sellingPrice),
+    } : {};
 
     try {
       if (paymentMethod === "Razorpay") {
@@ -647,9 +682,10 @@ export default function Checkout() {
               razorpayOrderId: response.razorpay_order_id,
               razorpayPaymentId: response.razorpay_payment_id,
               ...buyNowPayload,
+              ...comboPayload,
             });
             if (orderRes.success) {
-              if (!isBuyNow) {
+              if (!isBuyNow && !isComboCheckout) {
                 window.dispatchEvent(new CustomEvent("cart-updated", { detail: { items: [] } }));
               }
               setOrderSuccess({ ...orderRes.order, total, paymentMethod });
@@ -665,9 +701,10 @@ export default function Checkout() {
           paymentMethod: paymentMethod === "Card" ? "Card" : "COD",
           note, couponCode: couponApplied?.couponCode || null, couponDiscount, shippingCharge, tax,
           ...buyNowPayload,
+          ...comboPayload,
         });
         if (orderRes.success) {
-          if (!isBuyNow) {
+          if (!isBuyNow && !isComboCheckout) {
             window.dispatchEvent(new CustomEvent("cart-updated", { detail: { items: [] } }));
           }
           setOrderSuccess({ ...orderRes.order, total, paymentMethod });
@@ -806,6 +843,14 @@ export default function Checkout() {
                       }}>{name}</p>
                       <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 2, flexWrap: "wrap" }}>
                         <span style={{ fontSize: 12, color: "#9ca3af" }}>Qty: {qty}</span>
+
+                        {item.isCombo && (
+                          <span style={{
+                            fontSize: 10, fontWeight: 700, color: "#e65100",
+                            background: "#fff3e0", border: "1px solid #ffe0b2",
+                            padding: "1px 7px", borderRadius: 5,
+                          }}>🎁 COMBO</span>
+                        )}
                         {/* ✅ Variant label badge */}
                         {variantLabel && (
                           <span style={{

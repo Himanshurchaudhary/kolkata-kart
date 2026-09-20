@@ -1,21 +1,15 @@
 // src/Pages/UserWishlist.jsx
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Heart, ShoppingCart, Trash2, Star, Package, ArrowRight, Loader2 } from 'lucide-react';
+import { Heart, ShoppingCart, Trash2, Gift, ArrowRight, Loader2 } from 'lucide-react';
 import {
   fetchWishlist,
-  removeFromWishlist,
-  addToCart,
+  fetchComboWishlist,
+  removeComboFromWishlist,
+  addComboToCart,
 } from '../utils/cartWishlist';
 
 import ProductCard from '../Components/ProductCard';
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-const getImage = (prod) =>
-  prod?.thumbnail || prod?.additionalImages?.[0] || null;
-
-const formatPrice = (n) =>
-  typeof n === 'number' ? `₹${n.toFixed(2)}` : '—';
 
 // ─── Toast ────────────────────────────────────────────────────────────────────
 const Toast = ({ message, type, onDone }) => {
@@ -44,6 +38,8 @@ const Toast = ({ message, type, onDone }) => {
       animation: 'toastIn 0.25s ease',
       whiteSpace: 'nowrap',
       maxWidth: 'calc(100vw - 32px)',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
     }}>
       <style>{`@keyframes toastIn { from { opacity:0; transform:translateX(-50%) translateY(10px); } to { opacity:1; transform:translateX(-50%) translateY(0); } }`}</style>
       {type === 'success' ? <ShoppingCart size={15} /> : <Trash2 size={15} />}
@@ -52,7 +48,158 @@ const Toast = ({ message, type, onDone }) => {
   );
 };
 
-// ─── Product Card ─────────────────────────────────────────────────────────────
+// ─── Combo Wishlist Card ──────────────────────────────────────────────────────
+// Poora card clickable hai → /combos/:id (details page).
+// Buttons ke andar stopPropagation hai, taaki wo card click trigger na karein.
+const ComboWishlistCard = ({ combo, onOpen, onRemove, onAddToCart, removing, adding }) => {
+  const comboPrice = Number(combo.comboPrice || 0);
+  const totalMrp   = Number(combo.totalMrp || 0);
+  const savingsPct = totalMrp > comboPrice
+    ? Math.round(((totalMrp - comboPrice) / totalMrp) * 100)
+    : 0;
+  const stock  = Number(combo.stockQuantity ?? 0);
+  const isOOS  = stock === 0;
+  const isLow  = !isOOS && stock <= 10;
+  const items  = combo.products || [];
+
+  return (
+    <div
+      onClick={() => onOpen(combo.id)}
+      style={{
+        background: '#fff',
+        borderRadius: 16,
+        overflow: 'hidden',
+        border: '1px solid #c8e6c9',
+        boxShadow: '0 2px 12px rgba(45,158,45,0.08)',
+        display: 'flex',
+        flexDirection: 'column',
+        cursor: 'pointer',
+        transition: 'box-shadow 0.2s, transform 0.2s',
+        opacity: removing ? 0.6 : 1,
+      }}
+      onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 8px 24px rgba(45,158,45,0.18)'; e.currentTarget.style.transform = 'translateY(-3px)'; }}
+      onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 2px 12px rgba(45,158,45,0.08)'; e.currentTarget.style.transform = 'translateY(0)'; }}
+    >
+      {/* Image */}
+      <div style={{
+        position: 'relative', width: '100%', aspectRatio: '1/1',
+        background: 'linear-gradient(145deg, #f0faf0, #e8f5e9)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        overflow: 'hidden',
+      }}>
+        {combo.thumbnail
+          ? <img src={combo.thumbnail} alt={combo.name}
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          : <Gift size={48} color="#2d9e2d" strokeWidth={1.3} />
+        }
+
+        {savingsPct > 0 && (
+          <span style={{
+            position: 'absolute', top: 8, left: 8,
+            background: 'linear-gradient(135deg,#ff6b35,#e53935)',
+            color: '#fff', fontSize: 10, fontWeight: 800,
+            padding: '3px 8px', borderRadius: 5,
+          }}>{savingsPct}% OFF</span>
+        )}
+
+        {/* Remove (filled heart) */}
+        <button
+          onClick={(e) => { e.stopPropagation(); onRemove(combo.id); }}
+          disabled={removing}
+          title="Remove from wishlist"
+          style={{
+            position: 'absolute', top: 8, right: 8,
+            width: 30, height: 30, borderRadius: '50%',
+            background: 'rgba(255,255,255,0.92)', border: '1px solid #fecaca',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: removing ? 'not-allowed' : 'pointer',
+            boxShadow: '0 1px 4px rgba(0,0,0,0.12)',
+          }}
+        >
+          {removing
+            ? <Loader2 size={14} color="#ef4444" style={{ animation: 'spin 0.7s linear infinite' }} />
+            : <Heart size={15} color="#ef4444" fill="#ef4444" />
+          }
+        </button>
+      </div>
+
+      {/* Body */}
+      <div style={{ padding: 12, display: 'flex', flexDirection: 'column', gap: 6, flex: 1 }}>
+        <span style={{
+          alignSelf: 'flex-start', fontSize: 10, fontWeight: 800,
+          color: '#1b5e20', background: 'rgba(45,158,45,0.12)',
+          border: '1px solid rgba(45,158,45,0.2)',
+          padding: '2px 8px', borderRadius: 20,
+        }}>🎁 COMBO • {items.length} Items</span>
+
+        <div style={{
+          fontSize: 13, fontWeight: 700, color: '#1a2332', lineHeight: 1.35,
+          overflow: 'hidden', display: '-webkit-box',
+          WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', minHeight: 35,
+        }}>{combo.name}</div>
+
+        {/* Mini product thumbs */}
+        {items.length > 0 && (
+          <div style={{ display: 'flex', gap: 4 }}>
+            {items.slice(0, 4).map((p, i) => (
+              <div key={p.id || i} title={p.name} style={{
+                width: 28, height: 28, borderRadius: 6, overflow: 'hidden',
+                background: '#f1f8f1', border: '1px solid #c8e6c9',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                {p.thumbnail
+                  ? <img src={p.thumbnail} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  : <span style={{ fontSize: 12 }}>🛒</span>
+                }
+              </div>
+            ))}
+            {items.length > 4 && (
+              <div style={{
+                width: 28, height: 28, borderRadius: 6, background: '#e8f5e9',
+                border: '1px solid #c8e6c9', display: 'flex', alignItems: 'center',
+                justifyContent: 'center', fontSize: 9, fontWeight: 800, color: '#2d9e2d',
+              }}>+{items.length - 4}</div>
+            )}
+          </div>
+        )}
+
+        {/* Price */}
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, flexWrap: 'wrap' }}>
+          <span style={{ fontSize: 16, fontWeight: 900, color: '#1b5e20' }}>
+            ₹{comboPrice.toFixed(2)}
+          </span>
+          {totalMrp > comboPrice && (
+            <span style={{ fontSize: 11, color: '#9ca3af', textDecoration: 'line-through' }}>
+              ₹{totalMrp.toFixed(2)}
+            </span>
+          )}
+        </div>
+
+        {isOOS && <div style={{ fontSize: 10, fontWeight: 700, color: '#c62828' }}>❌ Out of Stock</div>}
+        {isLow && <div style={{ fontSize: 10, fontWeight: 700, color: '#e65100' }}>⚠️ Only {stock} left!</div>}
+
+        {/* Add to cart */}
+        <button
+          onClick={(e) => { e.stopPropagation(); onAddToCart(combo.id); }}
+          disabled={isOOS || adding}
+          style={{
+            marginTop: 'auto', width: '100%', padding: '9px 0',
+            background: isOOS ? '#ccc' : '#2d9e2d',
+            color: '#fff', border: 'none', borderRadius: 10,
+            fontSize: 12, fontWeight: 700,
+            cursor: isOOS || adding ? 'not-allowed' : 'pointer',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+          }}
+        >
+          {adding
+            ? <><Loader2 size={13} style={{ animation: 'spin 0.7s linear infinite' }} /> Adding…</>
+            : <><ShoppingCart size={13} /> {isOOS ? 'Out of Stock' : 'Add to Cart'}</>
+          }
+        </button>
+      </div>
+    </div>
+  );
+};
 
 // ─── Empty State ──────────────────────────────────────────────────────────────
 const EmptyWishlist = ({ onBrowse }) => (
@@ -90,20 +237,32 @@ const EmptyWishlist = ({ onBrowse }) => (
 const UserWishlist = () => {
   const navigate = useNavigate();
 
-  const [products,   setProducts]   = useState([]);
-  const [loading,    setLoading]    = useState(true);
-  const [error,      setError]      = useState(null);
-  const [removing,   setRemoving]   = useState({});
-  const [addingCart, setAddingCart] = useState({});
-  const [toast,      setToast]      = useState(null);
+  const [products,      setProducts]      = useState([]);
+  const [combos,       setCombos]        = useState([]);
+  const [loading,      setLoading]       = useState(true);
+  const [error,        setError]         = useState(null);
+  const [removingCombo, setRemovingCombo] = useState({});
+  const [addingCombo,   setAddingCombo]   = useState({});
+  const [toast,        setToast]         = useState(null);
 
   const loadWishlist = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const data = await fetchWishlist();
+      // Products aur combos alag-alag load hote hain.
+      // Combo wishlist fail ho to bhi product wishlist dikhta rahe.
+      const [prodRes, comboRes] = await Promise.allSettled([
+        fetchWishlist(),
+        fetchComboWishlist(),
+      ]);
+
+      if (prodRes.status === 'rejected') throw prodRes.reason;
+
+      const data = prodRes.value;
       const list = data.products || data.data || (Array.isArray(data) ? data : []);
       setProducts(list);
+
+      setCombos(comboRes.status === 'fulfilled' ? (comboRes.value.combos || []) : []);
     } catch {
       setError('Failed to load wishlist. Please try again.');
     } finally {
@@ -122,30 +281,32 @@ const UserWishlist = () => {
     return () => window.removeEventListener('wishlist-updated', handler);
   }, []);
 
-  const handleRemove = async (productId) => {
-    setRemoving(p => ({ ...p, [productId]: true }));
+  const handleRemoveCombo = async (comboId) => {
+    setRemovingCombo(p => ({ ...p, [comboId]: true }));
     try {
-      await removeFromWishlist(productId);
-      setProducts(prev => prev.filter(p => p.id !== productId));
+      await removeComboFromWishlist(comboId);
+      setCombos(prev => prev.filter(c => c.id !== comboId));
       setToast({ message: 'Removed from wishlist', type: 'remove' });
-    } catch {
-      setToast({ message: 'Failed to remove item', type: 'remove' });
+    } catch (err) {
+      setToast({ message: err.message || 'Failed to remove item', type: 'remove' });
     } finally {
-      setRemoving(p => ({ ...p, [productId]: false }));
+      setRemovingCombo(p => ({ ...p, [comboId]: false }));
     }
   };
 
-  const handleAddToCart = async (productId) => {
-    setAddingCart(p => ({ ...p, [productId]: true }));
+  const handleAddComboToCart = async (comboId) => {
+    setAddingCombo(p => ({ ...p, [comboId]: true }));
     try {
-      await addToCart(productId, 1);
-      setToast({ message: 'Added to cart!', type: 'success' });
-    } catch {
-      setToast({ message: 'Failed to add to cart', type: 'remove' });
+      await addComboToCart(comboId, 1);
+      setToast({ message: 'Combo added to cart!', type: 'success' });
+    } catch (err) {
+      setToast({ message: err.message || 'Failed to add to cart', type: 'remove' });
     } finally {
-      setAddingCart(p => ({ ...p, [productId]: false }));
+      setAddingCombo(p => ({ ...p, [comboId]: false }));
     }
   };
+
+  const totalCount = products.length + combos.length;
 
   return (
     <div style={{ flex: 1, padding: '0 0 40px', minHeight: 0, boxSizing: 'border-box' }}>
@@ -240,12 +401,12 @@ const UserWishlist = () => {
               fontSize: 13, fontWeight: 700, color: '#16a34a',
               background: '#dcfce7', padding: '3px 10px', borderRadius: 20,
             }}>
-              {products.length}
+              {totalCount}
             </span>
           )}
         </h2>
 
-        {products.length > 0 && (
+        {totalCount > 0 && (
           <button
             className="wishlist-shop-btn"
             onClick={() => navigate('/user/product')}
@@ -297,20 +458,32 @@ const UserWishlist = () => {
       )}
 
       {/* Empty */}
-      {!loading && !error && products.length === 0 && (
+      {!loading && !error && totalCount === 0 && (
         <EmptyWishlist onBrowse={() => navigate('/user/product')} />
       )}
 
-      {/* Grid */}
-      {!loading && !error && products.length > 0 && (
+      {/* Grid: pehle combos, phir products */}
+      {!loading && !error && totalCount > 0 && (
         <div className="wishlist-grid">
+          {combos.map(combo => (
+            <ComboWishlistCard
+              key={`combo-${combo.id}`}
+              combo={combo}
+              onOpen={(id) => navigate(`/combos/${id}`)}
+              onRemove={handleRemoveCombo}
+              onAddToCart={handleAddComboToCart}
+              removing={!!removingCombo[combo.id]}
+              adding={!!addingCombo[combo.id]}
+            />
+          ))}
+
           {products.map(prod => (
-  <ProductCard
-    key={prod.id}
-    product={prod}
-    onUnwish={(id) => setProducts(prev => prev.filter(p => p.id !== id))}
-  />
-))}
+            <ProductCard
+              key={prod.id}
+              product={prod}
+              onUnwish={(id) => setProducts(prev => prev.filter(p => p.id !== id))}
+            />
+          ))}
         </div>
       )}
 

@@ -40,6 +40,7 @@ import SellerManagement from './Admin/SellerManagement'; // NEW
 import SellerProductsApproval from './Admin/SellerProductsApproval'
 import AdminPincodeManager from "./Adminpincodemanager";
 import MobileAdminBottomBar from './MobileAdminBottomBar';
+import CombosPage from './Admin/CombosPage';
 
 const AdminLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -111,7 +112,9 @@ const AdminLayout = () => {
             <Route path="customers/:id/orders" element={<CustomerOrders />} />
             <Route path="sellers" element={<SellerManagement />} /> {/* NEW */}
             <Route path="seller-products-approval" element={<SellerProductsApproval />} /> {/* NEW */}
-            <Route path="pincode" element={<AdminPincodeManager/>} /> {/* NEW */}
+            <Route path="pincode" element={<AdminPincodeManager />} /> {/* NEW */}
+            <Route path="combolist" element={<CombosPage />} />
+
 
 
           </Routes>

@@ -43,6 +43,10 @@ const routes = [
   ['/api/seller', './routes/sellerRoutes.js'],
   ['/api/adminSellers', './routes/adminSellerRoutes.js'],
     ['/api/pincode', './routes/adminPincodeRoutes'],
+    ['/api/combos', './routes/Comboroutes'],
+        ['/api/combo-wishlist', './routes/User/comboWishlistRoutes'],
+
+
 
 ];
 for (const [path_, file] of routes) {

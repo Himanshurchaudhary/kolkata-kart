@@ -18,22 +18,22 @@ const PAYMENT_STATUSES = ["Pending", "Paid", "Failed", "Refunded"];
 
 // ── Status colors ────────────────────────────────────────────
 const statusStyle = (s) => ({
-  Pending:      { bg: "#fef9c3", color: "#854d0e" },
-  Processing:   { bg: "#dbeafe", color: "#1e40af" },
-  Shipped:      { bg: "#ede9fe", color: "#5b21b6" },
-  Delivered:    { bg: "#dcfce7", color: "#166534" },
-  Completed:    { bg: "#d1fae5", color: "#065f46" },
-  Cancelled:    { bg: "#fee2e2", color: "#991b1b" },
+  Pending: { bg: "#fef9c3", color: "#854d0e" },
+  Processing: { bg: "#dbeafe", color: "#1e40af" },
+  Shipped: { bg: "#ede9fe", color: "#5b21b6" },
+  Delivered: { bg: "#dcfce7", color: "#166534" },
+  Completed: { bg: "#d1fae5", color: "#065f46" },
+  Cancelled: { bg: "#fee2e2", color: "#991b1b" },
   "On The Way": { bg: "#fce7f3", color: "#db2777" },
-  Returned:     { bg: "#ffedd5", color: "#9a3412" },
+  Returned: { bg: "#ffedd5", color: "#9a3412" },
 }[s] || { bg: "#f3f4f6", color: "#374151" });
 
 const payStyle = (s) => ({
-  Paid:      { bg: "#dcfce7", color: "#166534" },
-  Pending:   { bg: "#fef9c3", color: "#854d0e" },
-  Failed:    { bg: "#fee2e2", color: "#991b1b" },
-  Refunded:  { bg: "#ede9fe", color: "#5b21b6" },
-  Complete:  { bg: "#d1fae5", color: "#065f46" },
+  Paid: { bg: "#dcfce7", color: "#166534" },
+  Pending: { bg: "#fef9c3", color: "#854d0e" },
+  Failed: { bg: "#fee2e2", color: "#991b1b" },
+  Refunded: { bg: "#ede9fe", color: "#5b21b6" },
+  Complete: { bg: "#d1fae5", color: "#065f46" },
 }[s] || { bg: "#f3f4f6", color: "#374151" });
 
 function Badge({ label, type = "delivery" }) {
@@ -112,11 +112,11 @@ function getDeliveryEstimate(val) {
     hour: "2-digit", minute: "2-digit", hour12: true,
   });
   if (diffMs <= 0) return { label: "Overdue", dateStr, overdue: true, urgent: false };
-  const mins  = Math.floor(diffMs / 60000);
+  const mins = Math.floor(diffMs / 60000);
   const hours = Math.floor(mins / 60);
-  const days  = Math.floor(hours / 24);
+  const days = Math.floor(hours / 24);
   let t = "";
-  if (days  > 0) t += `${days}d `;
+  if (days > 0) t += `${days}d `;
   if (hours % 24 > 0) t += `${hours % 24}h `;
   if (days === 0 && mins % 60 > 0) t += `${mins % 60}m`;
   return { label: t.trim() + " remaining", dateStr, overdue: false, urgent: days === 0 };
@@ -126,18 +126,18 @@ function getDeliveryEstimate(val) {
 // MAIN
 // ══════════════════════════════════════════════════════════════
 export default function OrderDetailModal({ order: init, onClose, onStatusUpdate }) {
-  const [order,     setOrder]     = useState(init);
-  const [fetching,  setFetching]  = useState(true);
+  const [order, setOrder] = useState(init);
+  const [fetching, setFetching] = useState(true);
   const [newStatus, setNewStatus] = useState(init?.status || "");
   const [payStatus, setPayStatus] = useState(init?.paymentStatus || "");
-  const [updating,  setUpdating]  = useState(false);
+  const [updating, setUpdating] = useState(false);
   const [statusMsg, setStatusMsg] = useState("");
-  const [taxList,   setTaxList]   = useState([]);
-  const [estDays,   setEstDays]   = useState("");
-  const [estHours,  setEstHours]  = useState("");
-  const [estMins,   setEstMins]   = useState("");
+  const [taxList, setTaxList] = useState([]);
+  const [estDays, setEstDays] = useState("");
+  const [estHours, setEstHours] = useState("");
+  const [estMins, setEstMins] = useState("");
   const [estSaving, setEstSaving] = useState(false);
-  const [estMsg,    setEstMsg]    = useState("");
+  const [estMsg, setEstMsg] = useState("");
 
   // Fetch full order
   useEffect(() => {
@@ -152,7 +152,7 @@ export default function OrderDetailModal({ order: init, onClose, onStatusUpdate 
           setPayStatus(d.order.paymentStatus);
         }
       })
-      .catch(() => {})
+      .catch(() => { })
       .finally(() => setFetching(false));
   }, [init?.id]);
 
@@ -161,7 +161,7 @@ export default function OrderDetailModal({ order: init, onClose, onStatusUpdate 
     fetch(`${API_URL}/api/taxes/active-rate`)
       .then(r => r.json())
       .then(d => { if (d.success) setTaxList(d.taxes || []); })
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   // ESC close
@@ -175,7 +175,7 @@ export default function OrderDetailModal({ order: init, onClose, onStatusUpdate 
   const handleStatusUpdate = async () => {
     setUpdating(true); setStatusMsg("");
     try {
-      const res  = await fetch(`${API_URL}/api/orders/admin/${order.id}/status`, {
+      const res = await fetch(`${API_URL}/api/orders/admin/${order.id}/status`, {
         method: "PATCH", headers: authHdr(),
         body: JSON.stringify({ status: newStatus, paymentStatus: payStatus }),
       });
@@ -188,7 +188,7 @@ export default function OrderDetailModal({ order: init, onClose, onStatusUpdate 
         setStatusMsg("error:" + (data.message || "Update failed"));
       }
     } catch { setStatusMsg("error:Network error"); }
-    finally   { setUpdating(false); }
+    finally { setUpdating(false); }
   };
 
   // ── Estimate save ────────────────────────────────────────
@@ -203,7 +203,7 @@ export default function OrderDetailModal({ order: init, onClose, onStatusUpdate 
     target.setMinutes(target.getMinutes() + m);
     setEstSaving(true); setEstMsg("");
     try {
-      const res  = await fetch(`${API_URL}/api/orders/admin/${order.id}/delivery-estimate`, {
+      const res = await fetch(`${API_URL}/api/orders/admin/${order.id}/delivery-estimate`, {
         method: "PATCH", headers: authHdr(),
         body: JSON.stringify({ estimatedDeliveryAt: target.toISOString() }),
       });
@@ -214,11 +214,11 @@ export default function OrderDetailModal({ order: init, onClose, onStatusUpdate 
         setEstDays(""); setEstHours(""); setEstMins("");
       } else { setEstMsg("error:" + (data.message || "Failed")); }
     } catch { setEstMsg("error:Network error"); }
-    finally   { setEstSaving(false); }
+    finally { setEstSaving(false); }
   };
 
   const addr = order?.shippingAddress || {};
-  const est  = getDeliveryEstimate(order?.estimatedDeliveryAt);
+  const est = getDeliveryEstimate(order?.estimatedDeliveryAt);
 
   // Tax calculation
   const taxable = Math.max(0,
@@ -317,16 +317,16 @@ export default function OrderDetailModal({ order: init, onClose, onStatusUpdate 
             <Section emoji="🏪" title="Seller Details" accent="#16a34a">
               {(order?.shop_name || order?.seller_name) ? (
                 <>
-                  <Row label="Shop"      value={order?.shop_name}     bold color="#166534" />
-                  <Row label="Category"  value={order?.shop_category} />
-                  <Row label="Seller"    value={order?.seller_name} />
-                  <Row label="Email"     value={order?.seller_email} />
-                  <Row label="Mobile"    value={order?.seller_mobile} />
-                  <Row label="Street"    value={order?.shop_street} />
-                  <Row label="City"      value={order?.shop_city} />
-                  <Row label="State"     value={order?.shop_state} />
-                  <Row label="Pincode"   value={order?.shop_pincode} />
-                  <Row label="UPI ID"    value={order?.upi_id} />
+                  <Row label="Shop" value={order?.shop_name} bold color="#166534" />
+                  <Row label="Category" value={order?.shop_category} />
+                  <Row label="Seller" value={order?.seller_name} />
+                  <Row label="Email" value={order?.seller_email} />
+                  <Row label="Mobile" value={order?.seller_mobile} />
+                  <Row label="Street" value={order?.shop_street} />
+                  <Row label="City" value={order?.shop_city} />
+                  <Row label="State" value={order?.shop_state} />
+                  <Row label="Pincode" value={order?.shop_pincode} />
+                  <Row label="UPI ID" value={order?.upi_id} />
                 </>
               ) : (
                 <div style={{ fontSize: 13, color: "#9ca3af", textAlign: "center", padding: "8px 0" }}>
@@ -337,11 +337,11 @@ export default function OrderDetailModal({ order: init, onClose, onStatusUpdate 
 
             {/* ══ 2. ORDER SUMMARY ══ */}
             <Section emoji="🧾" title="Order Summary">
-              <Row label="Order ID"   value={order?.orderNumber} />
-              <Row label="Date"       value={order?.createdAt
+              <Row label="Order ID" value={order?.orderNumber} />
+              <Row label="Date" value={order?.createdAt
                 ? new Date(order.createdAt).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })
                 : "—"} />
-              <Row label="Payment"    value={order?.paymentMethod} />
+              <Row label="Payment" value={order?.paymentMethod} />
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "7px 0", borderBottom: "1px solid #f5f5f5" }}>
                 <span style={{ color: "#9ca3af", fontSize: 12 }}>Pay Status</span>
                 <Badge label={order?.paymentStatus || "—"} type="payment" />
@@ -385,9 +385,23 @@ export default function OrderDetailModal({ order: init, onClose, onStatusUpdate 
 
                       {/* Info */}
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: 13, fontWeight: 700, color: "#1a1a1a", marginBottom: 4 }}>
-                          {item.name}
-                        </div>
+                        {(() => {
+                          const m = String(item.name || "").match(/^\[COMBO:\s*(.+?)\]\s*(.*)$/);
+                          return (
+                            <>
+                              {m && (
+                                <span style={{
+                                  display: "inline-block", marginBottom: 3, fontSize: 10, fontWeight: 700,
+                                  color: "#e65100", background: "#fff3e0", border: "1px solid #ffe0b2",
+                                  padding: "1px 8px", borderRadius: 99,
+                                }}>🎁 {m[1]}</span>
+                              )}
+                              <div style={{ fontSize: 13, fontWeight: 700, color: "#1a1a1a", marginBottom: 4 }}>
+                                {m ? m[2] : item.name}
+                              </div>
+                            </>
+                          );
+                        })()}
                         <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
                           {(item.variantLabel || item.variant?.label) && (
                             <span style={{
@@ -423,7 +437,7 @@ export default function OrderDetailModal({ order: init, onClose, onStatusUpdate 
                   {/* ── Bill ── */}
                   <div style={{ marginTop: 14, paddingTop: 12, borderTop: "1px solid #e5e7eb" }}>
                     {[
-                      { label: "Subtotal",        value: toINR(order?.subtotal) },
+                      { label: "Subtotal", value: toINR(order?.subtotal) },
                       { label: "Coupon Discount", value: `-₹${Number(order?.couponDiscount || 0).toFixed(2)}` },
                       { label: "Delivery Charge", value: toINR(order?.shippingCharge) },
                     ].map((r, i) => (
@@ -477,22 +491,22 @@ export default function OrderDetailModal({ order: init, onClose, onStatusUpdate 
 
             {/* ══ 4. CUSTOMER ══ */}
             <Section emoji="👤" title="Customer Info">
-              <Row label="Name"  value={order?.user?.fullName || addr.name} bold />
-              <Row label="Phone" value={order?.user?.phone    || addr.phone} />
+              <Row label="Name" value={order?.user?.fullName || addr.name} bold />
+              <Row label="Phone" value={order?.user?.phone || addr.phone} />
               <Row label="Email" value={order?.user?.email} />
             </Section>
 
             {/* ══ 5. ADDRESS ══ */}
             <Section emoji="📍" title="Delivery Address">
-              <Row label="Name"     value={addr.name} bold />
-              <Row label="Phone"    value={addr.phone} />
-              <Row label="House"    value={addr.house} />
-              <Row label="Road"     value={addr.road} />
-              <Row label="City"     value={addr.city} />
-              <Row label="State"    value={addr.state} />
-              <Row label="Pincode"  value={addr.pincode} />
+              <Row label="Name" value={addr.name} bold />
+              <Row label="Phone" value={addr.phone} />
+              <Row label="House" value={addr.house} />
+              <Row label="Road" value={addr.road} />
+              <Row label="City" value={addr.city} />
+              <Row label="State" value={addr.state} />
+              <Row label="Pincode" value={addr.pincode} />
               <Row label="Landmark" value={addr.landmark} />
-              <Row label="Type"     value={addr.type} />
+              <Row label="Type" value={addr.type} />
             </Section>
 
             {/* ══ 6. UPDATE STATUS ══ */}
@@ -596,16 +610,16 @@ export default function OrderDetailModal({ order: init, onClose, onStatusUpdate 
 
               {/* COD warning */}
               {order?.paymentMethod === "COD" &&
-               (order?.status === "Delivered" || newStatus === "Delivered" || newStatus === "Completed") &&
-               payStatus !== "Paid" && (
-                <div style={{
-                  marginBottom: 14, background: "#fffbeb",
-                  border: "1px solid #fcd34d", borderRadius: 10,
-                  padding: "10px 14px", fontSize: 12, color: "#92400e", fontWeight: 600,
-                }}>
-                  ⚠️ COD order — mark payment as <strong>Paid</strong> after cash collection
-                </div>
-              )}
+                (order?.status === "Delivered" || newStatus === "Delivered" || newStatus === "Completed") &&
+                payStatus !== "Paid" && (
+                  <div style={{
+                    marginBottom: 14, background: "#fffbeb",
+                    border: "1px solid #fcd34d", borderRadius: 10,
+                    padding: "10px 14px", fontSize: 12, color: "#92400e", fontWeight: 600,
+                  }}>
+                    ⚠️ COD order — mark payment as <strong>Paid</strong> after cash collection
+                  </div>
+                )}
 
               {/* Completed order summary banner */}
               {(newStatus === "Completed" || order?.status === "Completed") && (
@@ -698,11 +712,11 @@ export default function OrderDetailModal({ order: init, onClose, onStatusUpdate 
                 </div>
                 <div style={{ display: "flex", gap: 7, flexWrap: "wrap", marginBottom: 14 }}>
                   {[
-                    { label: "30m",    d: 0, h: 0, m: 30 },
-                    { label: "2 hrs",  d: 0, h: 2, m: 0  },
-                    { label: "1 day",  d: 1, h: 0, m: 0  },
-                    { label: "2 days", d: 2, h: 0, m: 0  },
-                    { label: "3 days", d: 3, h: 0, m: 0  },
+                    { label: "30m", d: 0, h: 0, m: 30 },
+                    { label: "2 hrs", d: 0, h: 2, m: 0 },
+                    { label: "1 day", d: 1, h: 0, m: 0 },
+                    { label: "2 days", d: 2, h: 0, m: 0 },
+                    { label: "3 days", d: 3, h: 0, m: 0 },
                   ].map(p => (
                     <button
                       key={p.label}
@@ -723,9 +737,9 @@ export default function OrderDetailModal({ order: init, onClose, onStatusUpdate 
                 {/* Manual inputs */}
                 <div style={{ display: "flex", gap: 10, marginBottom: 14 }}>
                   {[
-                    { label: "Days",  val: estDays,  set: setEstDays,  max: 30 },
+                    { label: "Days", val: estDays, set: setEstDays, max: 30 },
                     { label: "Hours", val: estHours, set: setEstHours, max: 23 },
-                    { label: "Mins",  val: estMins,  set: setEstMins,  max: 59 },
+                    { label: "Mins", val: estMins, set: setEstMins, max: 59 },
                   ].map(({ label, val, set, max }) => (
                     <div key={label} style={{ flex: 1, textAlign: "center" }}>
                       <div style={{ fontSize: 10, fontWeight: 700, color: "#9ca3af", marginBottom: 6, textTransform: "uppercase" }}>

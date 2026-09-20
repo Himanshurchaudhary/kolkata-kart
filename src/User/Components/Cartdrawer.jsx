@@ -4,16 +4,16 @@ import { X, ShoppingCart, Plus, Minus, Trash2, ShoppingBag, ArrowRight } from "l
 import { fetchCart, updateCartItem, removeFromCart } from "../utils/cartWishlist";
 
 function CartItem({ item, onQtyChange, onRemove, updating, removing }) {
-  const product   = item.product || item;
-  const oldPrice  = Number(product.buyingPrice || 0);
-  const price     = Number(product.sellingPrice || product.price || 0);
-  const name      = product.name || "Product";
-  const image     = product.thumbnail || product.image;
-  const qty       = item.quantity || 1;
-  const discount  = oldPrice && oldPrice > price ? Math.round((1 - price / oldPrice) * 100) : null;
+  const product = item.product || item;     // "combo || ..." wali line hata do
+  const oldPrice = Number(product.buyingPrice || 0);
+  const price = Number(product.sellingPrice || product.price || 0);
+  const name = product.name || "Product";
+  const image = product.thumbnail || product.image;
+  const qty = item.quantity || 1;
+  const discount = oldPrice && oldPrice > price ? Math.round((1 - price / oldPrice) * 100) : null;
   const isLoading = updating || removing;
 
-  const variant      = item.variant || null;
+  const variant = item.variant || null;
   const variantLabel = variant
     ? [variant.colorName, variant.label].filter(Boolean).join(" / ")
     : null;
@@ -47,7 +47,16 @@ function CartItem({ item, onQtyChange, onRemove, updating, removing }) {
             overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box",
             WebkitLineClamp: 2, WebkitBoxOrient: "vertical",
           }}>{name}</p>
-
+          {/* ⬇️ YAHAN paste karo */}
+          {item.isCombo && (
+            <span style={{
+              display: "inline-block", marginTop: 3, fontSize: 10, fontWeight: 700,
+              color: "#e65100", background: "#fff3e0", border: "1px solid #ffe0b2",
+              padding: "1px 7px", borderRadius: 5
+            }}>
+              🎁 COMBO • {item.combo?.products?.length || 0} items
+            </span>
+          )}
           {/* Variant badge */}
           {variantLabel && (
             <span style={{
@@ -64,8 +73,10 @@ function CartItem({ item, onQtyChange, onRemove, updating, removing }) {
               <span style={{ fontSize: 11, color: "#bbb", textDecoration: "line-through" }}>₹{oldPrice.toFixed(2)}</span>
             )}
             {discount && (
-              <span style={{ fontSize: 9, fontWeight: 800, background: "#fef2f2", color: "#ef4444",
-                border: "1px solid #fecaca", borderRadius: 4, padding: "1px 5px" }}>
+              <span style={{
+                fontSize: 9, fontWeight: 800, background: "#fef2f2", color: "#ef4444",
+                border: "1px solid #fecaca", borderRadius: 4, padding: "1px 5px"
+              }}>
                 -{discount}%
               </span>
             )}
@@ -78,27 +89,33 @@ function CartItem({ item, onQtyChange, onRemove, updating, removing }) {
             <button
               onClick={() => qty > 1 ? onQtyChange(cartItemId, qty - 1) : onRemove(cartItemId)}
               disabled={isLoading}
-              style={{ width: 34, height: 34, border: "none", background: "#f9fafb",
+              style={{
+                width: 34, height: 34, border: "none", background: "#f9fafb",
                 cursor: isLoading ? "not-allowed" : "pointer",
                 display: "flex", alignItems: "center", justifyContent: "center",
-                color: "#374151", transition: "background 0.15s", minWidth: 34 }}
+                color: "#374151", transition: "background 0.15s", minWidth: 34
+              }}
               onMouseEnter={e => !isLoading && (e.currentTarget.style.background = "#f0fdf4")}
               onMouseLeave={e => (e.currentTarget.style.background = "#f9fafb")}
             >
               {qty === 1 ? <Trash2 size={12} color="#ef4444" /> : <Minus size={12} />}
             </button>
-            <span style={{ minWidth: 34, textAlign: "center", fontSize: 13, fontWeight: 700, color: "#111",
+            <span style={{
+              minWidth: 34, textAlign: "center", fontSize: 13, fontWeight: 700, color: "#111",
               borderLeft: "1px solid #e5e7eb", borderRight: "1px solid #e5e7eb",
-              lineHeight: "34px", padding: "0 4px" }}>
+              lineHeight: "34px", padding: "0 4px"
+            }}>
               {qty}
             </span>
             <button
               onClick={() => onQtyChange(cartItemId, qty + 1)}
               disabled={isLoading}
-              style={{ width: 34, height: 34, border: "none", background: "#f9fafb",
+              style={{
+                width: 34, height: 34, border: "none", background: "#f9fafb",
                 cursor: isLoading ? "not-allowed" : "pointer",
                 display: "flex", alignItems: "center", justifyContent: "center",
-                color: "#374151", transition: "background 0.15s", minWidth: 34 }}
+                color: "#374151", transition: "background 0.15s", minWidth: 34
+              }}
               onMouseEnter={e => !isLoading && (e.currentTarget.style.background = "#f0fdf4")}
               onMouseLeave={e => (e.currentTarget.style.background = "#f9fafb")}
             >
@@ -109,9 +126,11 @@ function CartItem({ item, onQtyChange, onRemove, updating, removing }) {
           <button
             onClick={() => onRemove(cartItemId)}
             disabled={isLoading}
-            style={{ background: "none", border: "none", cursor: isLoading ? "not-allowed" : "pointer",
+            style={{
+              background: "none", border: "none", cursor: isLoading ? "not-allowed" : "pointer",
               color: "#d1d5db", padding: "8px", display: "flex", alignItems: "center",
-              justifyContent: "center", transition: "color 0.15s", borderRadius: 8 }}
+              justifyContent: "center", transition: "color 0.15s", borderRadius: 8
+            }}
             onMouseEnter={e => !isLoading && (e.currentTarget.style.color = "#ef4444")}
             onMouseLeave={e => (e.currentTarget.style.color = "#d1d5db")}
           >
@@ -125,8 +144,8 @@ function CartItem({ item, onQtyChange, onRemove, updating, removing }) {
 
 export default function CartDrawer({ open, onClose }) {
   const navigate = useNavigate();
-  const [items,      setItems]      = useState([]);
-  const [loading,    setLoading]    = useState(false);
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [updatingId, setUpdatingId] = useState(null);
   const [removingId, setRemovingId] = useState(null);
 
@@ -153,11 +172,14 @@ export default function CartDrawer({ open, onClose }) {
   }, []);
 
   // ✅ cartItemId se update/remove — product.id se nahi
+    // ✅ cartItemId se update/remove — product.id se nahi
   const handleQtyChange = async (cartItemId, qty) => {
     setUpdatingId(cartItemId);
     try {
       const data = await updateCartItem(cartItemId, qty);
       setItems(data?.items || []);
+    } catch (err) {
+      alert(err.message || "Could not update quantity.");
     } finally { setUpdatingId(null); }
   };
 
@@ -166,12 +188,18 @@ export default function CartDrawer({ open, onClose }) {
     try {
       const data = await removeFromCart(cartItemId);
       setItems(data?.items || []);
+    } catch (err) {
+      alert(err.message || "Could not remove item.");
     } finally { setRemovingId(null); }
   };
 
+  
+
+  // CartDrawer.jsx → total calculation
   const total = items.reduce((sum, item) => {
     const p = item.product || item;
-    return sum + (p.sellingPrice ?? p.price ?? 0) * (item.quantity || 1);
+    const unit = item.combo ? item.combo.comboPrice : (p.sellingPrice ?? p.price ?? 0);
+    return sum + Number(unit) * (item.quantity || 1);
   }, 0);
   const itemCount = items.reduce((s, i) => s + (i.quantity || 1), 0);
 
@@ -212,16 +240,20 @@ export default function CartDrawer({ open, onClose }) {
       `}</style>
 
       {open && (
-        <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)",
-          zIndex: 1200, backdropFilter: "blur(2px)", animation: "overlayFadeIn 0.25s ease" }} />
+        <div onClick={onClose} style={{
+          position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)",
+          zIndex: 1200, backdropFilter: "blur(2px)", animation: "overlayFadeIn 0.25s ease"
+        }} />
       )}
 
       <div className={`cart-drawer ${open ? "cart-drawer--open" : "cart-drawer--closed"}`}>
 
         <div className="cart-header">
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <div style={{ width: 38, height: 38, borderRadius: 10, background: "#f0fdf4",
-              display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <div style={{
+              width: 38, height: 38, borderRadius: 10, background: "#f0fdf4",
+              display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0
+            }}>
               <ShoppingCart size={18} color="#16a34a" />
             </div>
             <div>
@@ -237,15 +269,21 @@ export default function CartDrawer({ open, onClose }) {
         <div className="cart-body">
           {loading && (
             <div style={{ paddingTop: 8 }}>
-              {[1,2,3].map(i => (
+              {[1, 2, 3].map(i => (
                 <div key={i} style={{ display: "flex", gap: 12, padding: "14px 0", borderBottom: "1px solid #f0f0f0" }}>
-                  <div style={{ width: 68, height: 68, borderRadius: 12, background: "#f0f0f0", flexShrink: 0,
-                    animation: "cartPulse 1.4s ease-in-out infinite" }} />
+                  <div style={{
+                    width: 68, height: 68, borderRadius: 12, background: "#f0f0f0", flexShrink: 0,
+                    animation: "cartPulse 1.4s ease-in-out infinite"
+                  }} />
                   <div style={{ flex: 1 }}>
-                    <div style={{ height: 13, width: "70%", background: "#f0f0f0", borderRadius: 4, marginBottom: 8,
-                      animation: "cartPulse 1.4s ease-in-out infinite" }} />
-                    <div style={{ height: 11, width: "35%", background: "#f0f0f0", borderRadius: 4,
-                      animation: "cartPulse 1.4s ease-in-out infinite" }} />
+                    <div style={{
+                      height: 13, width: "70%", background: "#f0f0f0", borderRadius: 4, marginBottom: 8,
+                      animation: "cartPulse 1.4s ease-in-out infinite"
+                    }} />
+                    <div style={{
+                      height: 11, width: "35%", background: "#f0f0f0", borderRadius: 4,
+                      animation: "cartPulse 1.4s ease-in-out infinite"
+                    }} />
                   </div>
                 </div>
               ))}
@@ -253,10 +291,14 @@ export default function CartDrawer({ open, onClose }) {
           )}
 
           {!loading && items.length === 0 && (
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center",
-              justifyContent: "center", padding: "56px 16px", gap: 16, textAlign: "center" }}>
-              <div style={{ width: 76, height: 76, borderRadius: "50%", background: "#f0fdf4",
-                display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <div style={{
+              display: "flex", flexDirection: "column", alignItems: "center",
+              justifyContent: "center", padding: "56px 16px", gap: 16, textAlign: "center"
+            }}>
+              <div style={{
+                width: 76, height: 76, borderRadius: "50%", background: "#f0fdf4",
+                display: "flex", alignItems: "center", justifyContent: "center"
+              }}>
                 <ShoppingBag size={34} color="#16a34a" strokeWidth={1.5} />
               </div>
               <div>
@@ -264,10 +306,12 @@ export default function CartDrawer({ open, onClose }) {
                 <p style={{ margin: 0, fontSize: 13, color: "#9ca3af" }}>Add products to get started</p>
               </div>
               <button onClick={() => { onClose(); navigate("/user/product"); }}
-                style={{ marginTop: 4, display: "flex", alignItems: "center", gap: 8,
+                style={{
+                  marginTop: 4, display: "flex", alignItems: "center", gap: 8,
                   padding: "12px 24px", background: "#16a34a", color: "#fff",
                   border: "none", borderRadius: 10, fontSize: 13, fontWeight: 700,
-                  cursor: "pointer", fontFamily: "inherit", minHeight: 44 }}>
+                  cursor: "pointer", fontFamily: "inherit", minHeight: 44
+                }}>
                 Browse Products <ArrowRight size={14} />
               </button>
             </div>
@@ -291,8 +335,10 @@ export default function CartDrawer({ open, onClose }) {
 
         {!loading && items.length > 0 && (
           <div className="cart-footer">
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center",
-              marginBottom: 14, flexWrap: "wrap", gap: 4 }}>
+            <div style={{
+              display: "flex", justifyContent: "space-between", alignItems: "center",
+              marginBottom: 14, flexWrap: "wrap", gap: 4
+            }}>
               <span style={{ fontSize: 13, color: "#6b7280", fontWeight: 500 }}>
                 Subtotal ({itemCount} item{itemCount !== 1 ? "s" : ""})
               </span>

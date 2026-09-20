@@ -4,6 +4,8 @@ import { openLoginModal } from "../utils/authEvents";
 import { addToCart, toggleWishlist, fetchWishlist } from "../utils/cartWishlist";
 import FlashSaleBanner from "./Flashsalebanner"
 import { useNavigate } from "react-router-dom";
+import ComboSection from "../Components/Combosection";
+import ComboPage    from "./Combopage";
 const API_BASEA = import.meta.env.VITE_API_URL;
 
 
@@ -1068,6 +1070,9 @@ export default function HomePage() {
       {page === "flash" && (
         <FlashSalePage flashSaleId={flashSaleId} onBack={handleBack} />
       )}
+      {page === "combo" && (
+  <ComboPage onBack={() => { setPage(null); window.scrollTo({ top: 0, behavior: "smooth" }); }} />
+)}
 
       {page === null && (
         <div style={{
@@ -1165,6 +1170,12 @@ export default function HomePage() {
   </div>
 </div>
 {/* ── End Navratri Section ── */}
+<ComboSection
+      onViewAll={() => {
+        setPage("combo");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }}
+    />
 
           <PopularProducts products={products} loading={prodLoading} />
           <PromoBanners />

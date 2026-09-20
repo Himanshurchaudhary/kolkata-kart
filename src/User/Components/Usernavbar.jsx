@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, NavLink, useLocation } from 'react-router-dom';
 import { MapPin, Search, Heart, ShoppingCart, User, LogOut, X, Menu, Shield } from 'lucide-react';
 import AuthModal from '../Pages/UserLogin';
-import { fetchCart, fetchWishlist } from "../utils/cartWishlist";
+import { fetchCart, fetchWishlist, fetchComboWishlist } from "../utils/cartWishlist";
 import CartDrawer from "../Components/Cartdrawer";
 const API_BASEA = import.meta.env.VITE_API_URL;
 
@@ -439,9 +439,13 @@ const UserNavbar = () => {
       setCartCount(total);
     }).catch(() => setCartCount(0));
 
-    fetchWishlist().then(data => {
-      setWishlistCount((data?.products || []).length);
-    }).catch(() => setWishlistCount(0));
+    Promise.all([fetchWishlist(), fetchComboWishlist()])
+  .then(([prodData, comboData]) => {
+    const prodCount   = (prodData?.products || []).length;
+    const comboCount  = (comboData?.combos  || []).length;
+    setWishlistCount(prodCount + comboCount);
+  })
+  .catch(() => setWishlistCount(0));
   }, [isLoggedIn]);
 
   const onCartUpdate = useCallback((e) => {
@@ -450,17 +454,38 @@ const UserNavbar = () => {
   }, []);
 
   const onWishlistUpdate = useCallback((e) => {
-    setWishlistCount((e.detail?.products || []).length);
-  }, []);
+  const prodCount = (e.detail?.products || []).length;
+  setWishlistCount(prev => {
+    // Sirf product count update hota hai event se
+    // Combo count preserve karne ke liye fetchComboWishlist se latest lo
+    fetchComboWishlist()
+      .then(comboData => {
+        setWishlistCount(prodCount + (comboData?.combos || []).length);
+      })
+      .catch(() => setWishlistCount(prodCount));
+    return prev; // fetch hone tak purana count rakho
+  });
+}, []);
+const onComboWishlistUpdate = useCallback(() => {
+  Promise.all([fetchWishlist(), fetchComboWishlist()])
+    .then(([prodData, comboData]) => {
+      setWishlistCount(
+        (prodData?.products || []).length + (comboData?.combos || []).length
+      );
+    })
+    .catch(() => {});
+}, []);
 
   useEffect(() => {
-    window.addEventListener("cart-updated", onCartUpdate);
-    window.addEventListener("wishlist-updated", onWishlistUpdate);
-    return () => {
-      window.removeEventListener("cart-updated", onCartUpdate);
-      window.removeEventListener("wishlist-updated", onWishlistUpdate);
-    };
-  }, [onCartUpdate, onWishlistUpdate]);
+  window.addEventListener("cart-updated", onCartUpdate);
+  window.addEventListener("wishlist-updated", onWishlistUpdate);
+  window.addEventListener("combo-wishlist-updated", onComboWishlistUpdate);
+  return () => {
+    window.removeEventListener("cart-updated", onCartUpdate);
+    window.removeEventListener("wishlist-updated", onWishlistUpdate);
+    window.removeEventListener("combo-wishlist-updated", onComboWishlistUpdate);
+  };
+}, [onCartUpdate, onWishlistUpdate, onComboWishlistUpdate]);
 
   useEffect(() => {
     const handler = () => { setAuthMode('login'); setShowAuth(true); };
