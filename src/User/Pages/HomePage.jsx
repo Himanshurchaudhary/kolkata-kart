@@ -286,9 +286,10 @@ const FeatureCategories = ({ categories, loading, products }) => {
   const navigate = useNavigate();
   const { isMobile, isTablet } = useResponsive();
   const [start, setStart] = useState(0);
+  const [hoveredIdx, setHoveredIdx] = useState(null);
 
-  const visible = isMobile ? 3 : isTablet ? 4 : 6;
   const total = categories.length;
+  const pageSize = 10;
 
   const getCount = (catId) =>
     products.filter(p => {
@@ -298,51 +299,133 @@ const FeatureCategories = ({ categories, loading, products }) => {
 
   const handleCategoryClick = (catId) => navigate(`/user/product?categories=${catId}`);
 
-  const cols = `repeat(${Math.min(total || visible, visible)}, 1fr)`;
+  const circleSize = isMobile ? 54 : isTablet ? 62 : 72;
+  const emojiSize  = isMobile ? 24 : isTablet ? 28 : 32;
+  const nameSize   = isMobile ? 10 : 12;
+  const countSize  = isMobile ? 9  : 11;
+  const gap        = isMobile ? 6  : 10;
 
   return (
-    <section id="feature-categories" style={{ marginBottom: isMobile ? 28 : isTablet ? 40 : 72, scrollMarginTop: 80 }}>
-      <SectionHeader
-        title="Feature Category"
-        onPrev={() => setStart(s => Math.max(0, s - 1))}
-        onNext={() => setStart(s => Math.min(Math.max(0, total - visible), s + 1))}
-      />
+    <section
+      id="feature-categories"
+      style={{
+        marginBottom: isMobile ? 28 : isTablet ? 40 : 72,
+        scrollMarginTop: 80,
+        background: "linear-gradient(135deg, #fff0f4 0%, #ffe4ec 60%, #ffd6e7 100%)",
+        borderRadius: 20,
+        padding: isMobile ? "14px 10px 18px" : "18px 16px 22px",
+      }}
+    >
+      {/* Header */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+        <h2 style={{ fontSize: isMobile ? 14 : 17, fontWeight: 700, color: "#b5004e", margin: 0 }}>
+          ✨ Feature Category
+        </h2>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <span style={{ color: "#e0336e", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>View All →</span>
+          <button onClick={() => setStart(s => Math.max(0, s - pageSize))}
+            style={{ width: 26, height: 26, borderRadius: "50%", border: "1.5px solid #f7a8c0", background: "#fff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#e0336e" }}>
+            <ChevronLeft />
+          </button>
+          <button onClick={() => setStart(s => Math.min(Math.max(0, total - pageSize), s + pageSize))}
+            style={{ width: 26, height: 26, borderRadius: "50%", border: "1.5px solid #f7a8c0", background: "#fff", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#e0336e" }}>
+            <ChevronRight />
+          </button>
+        </div>
+      </div>
+
       {loading ? (
-        <div style={{ display: "grid", gridTemplateColumns: cols, gap: isMobile ? 8 : 14 }}>
-          {[...Array(visible)].map((_, i) => (
-            <div key={i} style={{ height: isMobile ? 120 : 200, borderRadius: 12, background: "#f0f0f0", animation: "pulse 1.4s ease-in-out infinite" }} />
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap }}>
+          {[...Array(10)].map((_, i) => (
+            <div key={i} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
+              <div style={{
+                width: circleSize, height: circleSize, borderRadius: "50%",
+                background: "linear-gradient(90deg, #ffd6e7 25%, #ffe8f0 50%, #ffd6e7 75%)",
+                backgroundSize: "200% 100%", animation: "shimmerPink 1.4s infinite"
+              }} />
+              <div style={{ width: 48, height: 9, borderRadius: 4, background: "#ffd6e7", animation: "shimmerPink 1.4s infinite" }} />
+            </div>
           ))}
         </div>
       ) : (
-        <div style={{ display: "grid", gridTemplateColumns: cols, gap: isMobile ? 8 : 14 }}>
-          {categories.slice(start, start + visible).map((cat, i) => {
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap }}>
+          {categories.slice(start, start + pageSize).map((cat, i) => {
             const img = cat.thumbnail || cat.image;
+            const isHovered = hoveredIdx === i;
+            const count = getCount(cat.id);
             return (
               <div
                 key={cat.id || i}
                 onClick={() => handleCategoryClick(cat.id)}
+                onMouseEnter={() => setHoveredIdx(i)}
+                onMouseLeave={() => setHoveredIdx(null)}
                 style={{
-                  display: "flex", flexDirection: "column", alignItems: "center",
-                  padding: isMobile ? "10px 6px 10px" : "16px 12px 14px",
-                  background: "#fff", borderRadius: 16, border: "5px solid #efefef",
-                  cursor: "pointer", transition: "border 0.2s, box-shadow 0.2s",
-                  boxShadow: "0 2px 9px rgba(0,0,0,0.07)"
+                  display: "flex", flexDirection: "column",
+                  alignItems: "center", gap: isMobile ? 5 : 7,
+                  padding: isMobile ? "6px 2px" : "8px 4px",
+                  cursor: "pointer",
+                  // ✅ No card, no background, no border on wrapper
+                  background: "transparent",
+                  border: "none",
+                  transform: isHovered ? "translateY(-4px) scale(1.06)" : "scale(1)",
+                  transition: "transform 0.22s cubic-bezier(0.34,1.15,0.64,1)",
+                  animation: `popIn 0.4s ease ${i * 0.04}s both`,
                 }}
-                onMouseEnter={e => { e.currentTarget.style.border = "1.5px solid #2d9e2d"; e.currentTarget.style.boxShadow = "0 2px 10px rgba(45,158,45,0.12)"; }}
-                onMouseLeave={e => { e.currentTarget.style.border = "5px solid #efefef"; e.currentTarget.style.boxShadow = "0 2px 9px rgba(0,0,0,0.07)"; }}
               >
-                <div style={{
-                  width: "100%", height: isMobile ? 70 : 150,
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  marginBottom: isMobile ? 6 : 14, overflow: "hidden"
-                }}>
-                  {img
-                    ? <img src={img} alt={cat.name} style={{ width: "100%", height: "100%", objectFit: "contain" }} onError={e => { e.target.style.display = "none"; }} />
-                    : <div style={{ fontSize: isMobile ? 32 : 60 }}>{categoryEmojis[i % categoryEmojis.length]}</div>
-                  }
+                {/* Circle only */}
+                <div style={{ position: "relative" }}>
+                  <div style={{
+                    width: circleSize, height: circleSize,
+                    borderRadius: "50%",
+                    background: "linear-gradient(145deg, #fff5f8, #ffeaf1)",
+                    border: isHovered ? "2.5px solid #e0336e" : "2.5px solid #f9c0d4",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    overflow: "hidden", flexShrink: 0,
+                    boxShadow: isHovered ? "0 0 0 6px rgba(224,51,110,0.12)" : "0 0 0 0px rgba(224,51,110,0)",
+                    animation: isHovered ? "floatUp 2s ease-in-out infinite" : "none",
+                    transition: "border-color 0.2s, box-shadow 0.25s",
+                  }}>
+                    {img ? (
+                      <img src={img} alt={cat.name}
+                        style={{ width: "75%", height: "75%", objectFit: "contain" }}
+                        onError={e => { e.target.style.display = "none"; }}
+                      />
+                    ) : (
+                      <span style={{ fontSize: emojiSize }}>{categoryEmojis[i % categoryEmojis.length]}</span>
+                    )}
+                  </div>
+
+                  {/* Badge on circle */}
+                  {count > 0 && (
+                    <div style={{
+                      position: "absolute", top: -4, right: -4,
+                      background: "#e0336e", color: "#fff",
+                      fontSize: 9, fontWeight: 700,
+                      minWidth: 18, height: 18, borderRadius: 9,
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      padding: "0 4px", border: "2px solid #ffd6e7",
+                      animation: "badgePulse 2s ease-in-out infinite",
+                    }}>
+                      {count}
+                    </div>
+                  )}
                 </div>
-                <div style={{ fontSize: isMobile ? 11 : 14, fontWeight: 700, color: "#1a1a1a", textAlign: "center", marginBottom: 2 }}>{cat.name}</div>
-                <div style={{ fontSize: isMobile ? 10 : 12, color: "#888" }}>{getCount(cat.id)} Items</div>
+
+                {/* Name */}
+                <div style={{
+                  fontSize: nameSize, fontWeight: 700,
+                  color: isHovered ? "#b5004e" : "#8b0035",
+                  textAlign: "center", lineHeight: 1.2,
+                  wordBreak: "break-word", maxWidth: circleSize + 8,
+                  transition: "color 0.2s",
+                }}>
+                  {cat.name}
+                </div>
+
+                {/* Count */}
+                <div style={{ fontSize: countSize, color: "#c9597e", fontWeight: 500 }}>
+                  {count} items
+                </div>
               </div>
             );
           })}
@@ -351,8 +434,6 @@ const FeatureCategories = ({ categories, loading, products }) => {
     </section>
   );
 };
-
-
 
 // ─── Promo Banners (ads) ───────────────────────────────────────────────────────
 // ─── Promo Banners (mobile: animated peek carousel with auto-scroll) ─────────
@@ -1063,6 +1144,28 @@ export default function HomePage() {
     padding: 6px 0 3px;
     animation: navLabelPulse 2s ease-in-out infinite;
   }
+    @keyframes popIn {
+  0%   { transform: scale(0.7); opacity: 0; }
+  70%  { transform: scale(1.08); }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes floatUp {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-5px); }
+}
+@keyframes ripple {
+  0%   { box-shadow: 0 0 0 0 rgba(255,105,135,0.35); }
+  70%  { box-shadow: 0 0 0 12px rgba(255,105,135,0); }
+  100% { box-shadow: 0 0 0 0 rgba(255,105,135,0); }
+}
+@keyframes badgePulse {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.12); }
+}
+@keyframes shimmerPink {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
 `}</style>
 
       <CartToast />
